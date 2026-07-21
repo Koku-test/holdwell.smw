@@ -1,20 +1,18 @@
 {
-  "description": "站点健康巡检配置 — 在此添加要监控的站点",
-  "_instructions": "sites 数组中每个站点必填: name, url。pagespeedApiKey 在 global 中配置，留空则跳过 PageSpeed 检查。",
+  "description": "站点健康巡检配置 — Holdwell 站点群",
   "global": {
     "timeoutMs": 8000,
-    "concurrency": 3,
+    "concurrency": 2,
     "dnsResolvers": ["8.8.8.8", "1.1.1.1"],
-    "sslWarningDays": [60, 30, 14, 7],
     "responseTimeWarnMs": 3000,
     "responseTimeCritMs": 8000,
-    "retryCount": 3,
     "pagespeedApiKey": null
   },
   "sites": [
     {
-      "name": "Example",
-      "url": "https://example.com",
+      "name": "品牌站",
+      "url": "https://www.holdwell.net/",
+      "owner": "@王雨航(koku)",
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,
@@ -22,17 +20,69 @@
       "checkPagespeed": true
     },
     {
-      "name": "Bing",
-      "url": "https://www.bing.com",
+      "name": "中文集团站",
+      "url": "https://www.holdwellgroup.com/",
+      "owner": "@王雨航(koku)",
       "expectStatus": 200,
-      "checkPorts": [443],
+      "checkPorts": [80, 443],
       "checkDns": true,
       "checkSsl": true,
       "checkPagespeed": true
     },
     {
-      "name": "Baidu",
-      "url": "https://www.baidu.com",
+      "name": "品牌在线成交站",
+      "url": "https://www.holdwellparts.com/",
+      "owner": "@王雨航(koku)",
+      "expectStatus": 200,
+      "checkPorts": [80, 443],
+      "checkDns": true,
+      "checkSsl": true,
+      "checkPagespeed": true
+    },
+    {
+      "name": "非品牌在线成交站",
+      "url": "https://www.eheparts.com/",
+      "owner": "@黄开发(黄开发Oliver Huang)",
+      "expectStatus": 200,
+      "checkPorts": [80, 443],
+      "checkDns": true,
+      "checkSsl": true,
+      "checkPagespeed": true
+    },
+    {
+      "name": "单一类目在线成交站",
+      "url": "https://www.stopsolenoid.com/",
+      "owner": "@郭娟(JaneGuo)",
+      "expectStatus": 200,
+      "checkPorts": [80, 443],
+      "checkDns": true,
+      "checkSsl": true,
+      "checkPagespeed": true
+    },
+    {
+      "name": "高空车整机站",
+      "url": "https://www.hwlifts.com/",
+      "owner": "@魏卓青(魏卓青 Zoya Wei)",
+      "expectStatus": 200,
+      "checkPorts": [80, 443],
+      "checkDns": true,
+      "checkSsl": true,
+      "checkPagespeed": true
+    },
+    {
+      "name": "资讯站",
+      "url": "https://freepartsbook.com/",
+      "owner": "@郝建凯",
+      "expectStatus": 200,
+      "checkPorts": [80, 443],
+      "checkDns": true,
+      "checkSsl": true,
+      "checkPagespeed": true
+    },
+    {
+      "name": "美国项目站",
+      "url": "https://www.partwerks.com/",
+      "owner": "@杨续立",
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,

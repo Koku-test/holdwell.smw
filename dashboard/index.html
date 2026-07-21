@@ -284,7 +284,7 @@ function buildCard(site) {
         ${site.name}
         <span class="status-badge ${site.overall}">${statusLabel(site.overall)}</span>
       </div>
-      <span class="url">${site.url}</span>
+      <span class="url">${site.url}${site.owner ? ' · ' + site.owner : ''}</span>
     </div>
   `;
   card.appendChild(header);
@@ -366,7 +366,9 @@ function addCheckItemRaw(parent, label, status, value) {
 function formatHttp(check) {
   if (!check || check.status === 'skip') return '—';
   if (check.status === 'fail') return check.error || `${check.statusCode}`;
-  return `${check.statusCode} · ${fmtMs(check.elapsedMs)}`;
+  let txt = `${check.statusCode} · ${fmtMs(check.elapsedMs)}`;
+  if (check.redirect) txt += ' ↪️';
+  return txt;
 }
 
 function formatSsl(check) {

@@ -34,12 +34,24 @@ function nowCN() {
 }
 function elapsed(start) { return Date.now() - start; }
 
-function httpGet(url, timeoutMs) {
+function httpGet(url, timeoutMs, maxRedirects = 5) {
   return new Promise((resolve, reject) => {
     const parsed = new URL(url);
     const lib = parsed.protocol === 'https:' ? https : http;
     const start = Date.now();
     const req = lib.get(url, { timeout: timeoutMs, headers: { 'User-Agent': 'SOMW-HealthCheck/1.0' } }, (res) => {
+      // 跟随重定向
+      if ([301, 302, 303, 307, 308].includes(res.statusCode) && res.headers.location && maxRedirects > 0) {
+        const redirectUrl = new URL(res.headers.location, url).href;
+        req.destroy();
+        httpGet(redirectUrl, timeoutMs, maxRedirects - 1).then(r => {
+          r.redirectedFrom = url;
+          r.redirectedTo = redirectUrl;
+          r.originalStatusCode = res.statusCode;
+          resolve(r);
+        }).catch(reject);
+        return;
+      }
       const elapsedMs = Date.now() - start;
       let body = '';
       res.on('data', chunk => { body += chunk; });
@@ -54,7 +66,7 @@ function httpGet(url, timeoutMs) {
 
 /** 1. HTTP 可达性检查 */
 async function checkHttpReachability(url, expectStatus, timeoutMs) {
-  const result = { status: 'ok', statusCode: null, elapsedMs: 0, error: null, details: {} };
+  const result = { status: 'ok', statusCode: null, elapsedMs: 0, error: null, details: {}, redirect: null };
   try {
     const res = await httpGet(url, timeoutMs);
     result.statusCode = res.statusCode;
@@ -71,6 +83,11 @@ async function checkHttpReachability(url, expectStatus, timeoutMs) {
       contentType: res.headers['content-type'] || null,
       location: res.headers['location'] || null,
     };
+    // 重定向备注
+    if (res.redirectedFrom) {
+      result.redirect = { from: res.redirectedFrom, to: res.redirectedTo, code: res.originalStatusCode };
+      result.note = `${res.originalStatusCode} → ${res.redirectedTo}`;
+    }
     return result;
   } catch (e) {
     result.status = 'fail';
