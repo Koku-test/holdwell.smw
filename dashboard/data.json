@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-21T09:17:10.893Z",
-  "updatedAtCN": "2026/7/21 17:17:10",
+  "updatedAt": "2026-07-21T09:52:02.041Z",
+  "updatedAtCN": "2026/7/21 17:52:02",
   "sites": [
     {
       "name": "品牌站",
@@ -10,7 +10,7 @@
         "dns": {
           "status": "ok",
           "addresses": [
-            "47.246.23.240"
+            "163.181.66.167"
           ],
           "error": null,
           "via": "fallback",
@@ -20,13 +20,13 @@
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 254,
+            "elapsedMs": 454,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 198,
+            "elapsedMs": 203,
             "error": null
           }
         ],
@@ -38,12 +38,12 @@
           "validFrom": "Jan  7 00:00:00 2026 GMT",
           "validTo": "Feb  7 23:59:59 2027 GMT",
           "error": null,
-          "elapsedMs": 479
+          "elapsedMs": 956
         },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 995,
+          "elapsedMs": 1521,
           "error": null,
           "details": {
             "server": "Tengine",
@@ -86,13 +86,13 @@
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 59,
+            "elapsedMs": 310,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 50,
+            "elapsedMs": 45,
             "error": null
           }
         ],
@@ -104,12 +104,12 @@
           "validFrom": "Jun 18 00:00:00 2026 GMT",
           "validTo": "Sep 15 23:59:59 2026 GMT",
           "error": null,
-          "elapsedMs": 125
+          "elapsedMs": 377
         },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 194,
+          "elapsedMs": 394,
           "error": null,
           "details": {
             "server": "nginx/1.20.1",
@@ -152,13 +152,13 @@
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 214,
+            "elapsedMs": 453,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 203,
+            "elapsedMs": 308,
             "error": null
           }
         ],
@@ -170,12 +170,12 @@
           "validFrom": "May 30 15:05:03 2026 GMT",
           "validTo": "Aug 28 15:05:02 2026 GMT",
           "error": null,
-          "elapsedMs": 444
+          "elapsedMs": 1029
         },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 722,
+          "elapsedMs": 1327,
           "error": null,
           "details": {
             "server": "cloudflare",
@@ -218,13 +218,13 @@
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 226,
+            "elapsedMs": 453,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 204,
+            "elapsedMs": 304,
             "error": null
           }
         ],
@@ -236,12 +236,12 @@
           "validFrom": "May 29 06:39:02 2026 GMT",
           "validTo": "Aug 27 06:39:01 2026 GMT",
           "error": null,
-          "elapsedMs": 464
+          "elapsedMs": 1018
         },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 1487,
+          "elapsedMs": 1311,
           "error": null,
           "details": {
             "server": "cloudflare",
@@ -280,20 +280,6 @@
           "via": "fallback",
           "note": "系统 DNS 失败，使用备用 DNS"
         },
-        "ports": [
-          {
-            "port": 80,
-            "status": "ok",
-            "elapsedMs": 196,
-            "error": null
-          },
-          {
-            "port": 443,
-            "status": "ok",
-            "elapsedMs": 195,
-            "error": null
-          }
-        ],
         "ssl": {
           "status": "ok",
           "daysLeft": 52,
@@ -302,12 +288,26 @@
           "validFrom": "Jun 13 18:04:04 2026 GMT",
           "validTo": "Sep 11 18:04:03 2026 GMT",
           "error": null,
-          "elapsedMs": 416
+          "elapsedMs": 686
         },
+        "ports": [
+          {
+            "port": 80,
+            "status": "ok",
+            "elapsedMs": 1460,
+            "error": null
+          },
+          {
+            "port": 443,
+            "status": "ok",
+            "elapsedMs": 223,
+            "error": null
+          }
+        ],
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 799,
+          "elapsedMs": 995,
           "error": null,
           "details": {
             "server": "cloudflare",
@@ -350,13 +350,13 @@
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 151,
+            "elapsedMs": 1477,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 183,
+            "elapsedMs": 197,
             "error": null
           }
         ],
@@ -368,12 +368,12 @@
           "validFrom": "Jun 24 02:41:19 2026 GMT",
           "validTo": "Sep 22 02:41:18 2026 GMT",
           "error": null,
-          "elapsedMs": 808
+          "elapsedMs": 1682
         },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 1533,
+          "elapsedMs": 2321,
           "error": null,
           "details": {
             "server": "nginx/1.24.0",
@@ -416,13 +416,13 @@
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 224,
+            "elapsedMs": 480,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 217,
+            "elapsedMs": 309,
             "error": null
           }
         ],
@@ -434,12 +434,12 @@
           "validFrom": "May 12 00:00:00 2026 GMT",
           "validTo": "Nov 12 23:59:59 2026 GMT",
           "error": null,
-          "elapsedMs": 668
+          "elapsedMs": 1319
         },
         "http": {
           "status": "fail",
           "statusCode": 502,
-          "elapsedMs": 878,
+          "elapsedMs": 1533,
           "error": "期望状态码 200，实际 502",
           "details": {
             "server": "nginx/1.24.0",
@@ -469,26 +469,17 @@
       "url": "https://www.partwerks.com/",
       "hostname": "www.partwerks.com",
       "checks": {
-        "dns": {
-          "status": "ok",
-          "addresses": [
-            "23.227.38.74"
-          ],
-          "error": null,
-          "via": "fallback",
-          "note": "系统 DNS 失败，使用备用 DNS"
-        },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 197,
+            "elapsedMs": 476,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 193,
+            "elapsedMs": 298,
             "error": null
           }
         ],
@@ -500,12 +491,21 @@
           "validFrom": "May 29 10:59:03 2026 GMT",
           "validTo": "Aug 27 10:59:02 2026 GMT",
           "error": null,
-          "elapsedMs": 416
+          "elapsedMs": 788
+        },
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "23.227.38.74"
+          ],
+          "error": null,
+          "via": "fallback",
+          "note": "系统 DNS 失败，使用备用 DNS"
         },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 1892,
+          "elapsedMs": 786,
           "error": null,
           "details": {
             "server": "cloudflare",
