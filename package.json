@@ -1,0 +1,23 @@
+{
+  "name": "site-health-dashboard",
+  "version": "1.0.0",
+  "description": "GitHub Pages 站点健康巡检看台",
+  "main": "scripts/site-health-check.js",
+  "scripts": {
+    "check": "node scripts/site-health-check.js",
+    "cron": "node scripts/cron-health-check.js"
+  },
+  "keywords": [
+    "health-check",
+    "site-monitoring",
+    "ssl",
+    "dns",
+    "http",
+    "pagespeed"
+  ],
+  "author": "SOMW",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

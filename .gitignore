@@ -1,0 +1,12 @@
+node_modules/
+reports/
+.openclaw/
+AGENTS.md
+SOUL.md
+USER.md
+IDENTITY.md
+HEARTBEAT.md
+TOOLS.md
+DELIVERY_CHECKLIST.md
+GITHUB_SETUP.md
+PROJECT_SUMMARY.md

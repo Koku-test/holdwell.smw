@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏥 站点健康看台 — MVP</title>
+<style>
+  /* ========== Reset & Base ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+    background: #f0f2f5; color: #1a1a2e; padding: 20px; min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* ========== Header ========== */
+  .header {
+    max-width: 1400px; margin: 0 auto 20px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+  }
+  .header h1 { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .header .subtitle { color: #666; font-size: 13px; }
+
+  /* ========== Summary Bar ========== */
+  .summary-bar {
+    max-width: 1400px; margin: 0 auto 20px;
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  }
+  .summary-stat {
+    padding: 10px 18px; border-radius: 12px; font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; gap: 6px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .summary-stat .num { font-size: 22px; }
+  .summary-stat.total { border-left: 4px solid #666; }
+  .summary-stat.ok { border-left: 4px solid #22c55e; }
+  .summary-stat.warn { border-left: 4px solid #f59e0b; }
+  .summary-stat.fail { border-left: 4px solid #ef4444; }
+
+  .last-update { color: #888; font-size: 12px; margin-left: auto; }
+
+  /* ========== Filter Tabs ========== */
+  .filter-bar {
+    max-width: 1400px; margin: 0 auto 20px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .filter-tab {
+    padding: 6px 16px; border-radius: 20px; font-size: 13px; cursor: pointer;
+    border: 1.5px solid #ddd; background: #fff; transition: all .15s; font-weight: 500;
+  }
+  .filter-tab:hover { border-color: #999; }
+  .filter-tab.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+  .filter-tab .count { opacity: .7; margin-left: 4px; }
+
+  .refresh-btn {
+    margin-left: auto; padding: 6px 16px; border-radius: 20px; font-size: 13px;
+    border: 1.5px solid #ddd; background: #fff; cursor: pointer; transition: all .15s;
+  }
+  .refresh-btn:hover { background: #f5f5f5; border-color: #999; }
+
+  /* ========== Site Grid ========== */
+  .site-grid {
+    max-width: 1400px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px;
+  }
+  @media (max-width: 600px) { .site-grid { grid-template-columns: 1fr; } }
+
+  /* ========== Site Card ========== */
+  .site-card {
+    background: #fff; border-radius: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    overflow: hidden; transition: box-shadow .2s, transform .15s;
+    border-top: 4px solid #999;
+  }
+  .site-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.1); transform: translateY(-1px); }
+  .site-card.border-ok { border-top-color: #22c55e; }
+  .site-card.border-warn { border-top-color: #f59e0b; }
+  .site-card.border-fail { border-top-color: #ef4444; }
+
+  .card-header {
+    padding: 16px 18px 12px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+  }
+  .card-header .name {
+    font-size: 16px; font-weight: 700; word-break: break-all;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-header .url { font-size: 12px; color: #888; font-weight: 400; display: block; margin-top: 2px; }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; white-space: nowrap;
+  }
+  .status-badge.ok { background: #dcfce7; color: #166534; }
+  .status-badge.warn { background: #fef3c7; color: #92400e; }
+  .status-badge.fail { background: #fce4ec; color: #c62828; }
+  .status-badge.skip { background: #f3f4f6; color: #6b7280; }
+
+  /* ========== Checks Grid ========== */
+  .checks-grid {
+    padding: 0 18px 14px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  }
+  @media (max-width: 460px) { .checks-grid { grid-template-columns: 1fr; } }
+
+  .check-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; border-radius: 10px; font-size: 13px;
+    border: 1px solid #eee; transition: background .1s;
+  }
+  .check-item:hover { background: #fafafa; }
+
+  .check-icon { font-size: 16px; flex-shrink: 0; width: 20px; text-align: center; }
+  .check-label { color: #555; font-weight: 500; white-space: nowrap; }
+  .check-value { margin-left: auto; font-size: 12px; color: #333; font-variant-numeric: tabular-nums; text-align: right; }
+  .check-value.warn-text { color: #d97706; }
+  .check-value.fail-text { color: #dc2626; }
+
+  /* ========== Card Footer (expand) ========== */
+  .card-expand-toggle {
+    padding: 10px 18px; cursor: pointer; font-size: 12px; color: #888;
+    border-top: 1px solid #f0f0f0; display: flex; align-items: center; gap: 6px;
+    transition: background .1s;
+  }
+  .card-expand-toggle:hover { background: #fafafa; }
+  .card-expand-toggle .arrow { transition: transform .2s; }
+  .card-expand-toggle .arrow.open { transform: rotate(90deg); }
+
+  .card-details {
+    max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s ease;
+    padding: 0 18px; border-top: 0 solid #f0f0f0;
+  }
+  .card-details.open {
+    max-height: 600px; padding: 14px 18px; border-top-width: 1px;
+    overflow-y: auto;
+  }
+
+  .detail-section { margin-bottom: 12px; }
+  .detail-section:last-child { margin-bottom: 0; }
+  .detail-section h4 { font-size: 12px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+  .detail-section table { width: 100%; font-size: 12px; border-collapse: collapse; }
+  .detail-section td { padding: 3px 6px; border: 1px solid #f0f0f0; }
+  .detail-section td:first-child { color: #666; width: 100px; font-weight: 500; }
+  .detail-issue { color: #dc2626; font-size: 12px; padding: 2px 0; }
+
+  /* ========== Empty / Loading ========== */
+  .empty-state {
+    max-width: 1400px; margin: 60px auto; text-align: center; color: #999;
+  }
+  .empty-state h2 { font-size: 20px; margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ========== Legend ========== */
+  .legend {
+    max-width: 1400px; margin: 20px auto 0;
+    display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #888;
+  }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .legend-dot.ok { background: #22c55e; }
+  .legend-dot.warn { background: #f59e0b; }
+  .legend-dot.fail { background: #ef4444; }
+  .legend-dot.skip { background: #9ca3af; }
+</style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<div class="header">
+  <h1>🏥 站点健康看台 <span class="subtitle">MVP</span></h1>
+</div>
+
+<!-- ===== Summary ===== -->
+<div class="summary-bar" id="summaryBar">
+  <div class="summary-stat total"><span class="num" id="totalCount">—</span> 站点</div>
+  <div class="summary-stat ok"><span class="num" id="okCount">—</span> 正常</div>
+  <div class="summary-stat warn"><span class="num" id="warnCount">—</span> 警告</div>
+  <div class="summary-stat fail"><span class="num" id="failCount">—</span> 异常</div>
+  <span class="last-update" id="lastUpdate">加载中…</span>
+</div>
+
+<!-- ===== Filter ===== -->
+<div class="filter-bar">
+  <div class="filter-tab active" data-filter="all" onclick="setFilter('all')">全部</div>
+  <div class="filter-tab" data-filter="ok" onclick="setFilter('ok')">✅ 正常</div>
+  <div class="filter-tab" data-filter="warn" onclick="setFilter('warn')">⚠️ 警告</div>
+  <div class="filter-tab" data-filter="fail" onclick="setFilter('fail')">❌ 异常</div>
+  <button class="refresh-btn" onclick="loadData()">🔄 刷新数据</button>
+</div>
+
+<!-- ===== Grid ===== -->
+<div class="site-grid" id="siteGrid"></div>
+<div class="empty-state" id="emptyState" style="display:none">
+  <h2>📭 没有匹配的站点</h2>
+  <p>试试切换筛选条件</p>
+</div>
+
+<!-- ===== Legend ===== -->
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot ok"></span> 正常</span>
+  <span class="legend-item"><span class="legend-dot warn"></span> 需关注</span>
+  <span class="legend-item"><span class="legend-dot fail"></span> 异常</span>
+  <span class="legend-item"><span class="legend-dot skip"></span> 跳过（前置检查失败）</span>
+</div>
+
+<script>
+// ========== State ==========
+let data = null;
+let currentFilter = 'all';
+let expandedCards = new Set();
+
+// ========== Load Data ==========
+async function loadData() {
+  try {
+    const resp = await fetch('./data.json?_t=' + Date.now());
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    data = await resp.json();
+    render();
+  } catch (e) {
+    document.getElementById('siteGrid').innerHTML =
+      `<div class="empty-state"><h2>❌ 数据加载失败</h2><p>${e.message}<br>请确认 data.json 存在，或点击刷新重试。</p></div>`;
+    document.getElementById('lastUpdate').textContent = '加载失败';
+  }
+}
+loadData();
+
+// ========== Render ==========
+function render() {
+  if (!data || !data.sites || data.sites.length === 0) {
+    document.getElementById('siteGrid').innerHTML =
+      `<div class="empty-state"><h2>📭 暂无站点数据</h2><p>在 sites-config.json 中添加站点后运行巡检脚本。</p></div>`;
+    return;
+  }
+
+  // Summary
+  const total = data.sites.length;
+  const ok = data.sites.filter(s => s.overall === 'ok').length;
+  const warn = data.sites.filter(s => s.overall === 'warn').length;
+  const fail = data.sites.filter(s => s.overall === 'fail').length;
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('okCount').textContent = ok;
+  document.getElementById('warnCount').textContent = warn;
+  document.getElementById('failCount').textContent = fail;
+  document.getElementById('lastUpdate').textContent = `更新: ${data.updatedAtCN || '未知'}`;
+
+  // Filter tab counts
+  document.querySelectorAll('.filter-tab').forEach(t => {
+    const f = t.dataset.filter;
+    let cnt;
+    if (f === 'all') cnt = total;
+    else cnt = data.sites.filter(s => s.overall === f).length;
+    const span = t.querySelector('.count');
+    if (span) span.textContent = cnt;
+    else {
+      const s = document.createElement('span');
+      s.className = 'count';
+      s.textContent = cnt;
+      t.appendChild(s);
+    }
+  });
+
+  // Filter + render
+  const filtered = currentFilter === 'all'
+    ? data.sites
+    : data.sites.filter(s => s.overall === currentFilter);
+
+  const grid = document.getElementById('siteGrid');
+  grid.innerHTML = '';
+  filtered.forEach(site => grid.appendChild(buildCard(site)));
+
+  document.getElementById('emptyState').style.display = filtered.length === 0 ? 'block' : 'none';
+}
+
+// ========== Build Site Card ==========
+function buildCard(site) {
+  const card = document.createElement('div');
+  card.className = `site-card border-${site.overall}`;
+  card.dataset.overall = site.overall;
+
+  // --- Header ---
+  const header = document.createElement('div');
+  header.className = 'card-header';
+  header.innerHTML = `
+    <div>
+      <div class="name">
+        ${site.name}
+        <span class="status-badge ${site.overall}">${statusLabel(site.overall)}</span>
+      </div>
+      <span class="url">${site.url}</span>
+    </div>
+  `;
+  card.appendChild(header);
+
+  // --- Checks Grid ---
+  const checksDiv = document.createElement('div');
+  checksDiv.className = 'checks-grid';
+
+  const checkMap = site.checks || {};
+  addCheckItem(checksDiv, 'HTTP', checkMap.http, formatHttp);
+  addCheckItem(checksDiv, 'SSL', checkMap.ssl, formatSsl);
+  addCheckItem(checksDiv, 'DNS', checkMap.dns, formatDns);
+
+  if (checkMap.ports) {
+    const portOk = checkMap.ports.filter(p => p.status === 'ok').length;
+    const portTotal = checkMap.ports.length;
+    const portStatus = portOk === portTotal ? 'ok' : portOk > 0 ? 'warn' : 'fail';
+    addCheckItemRaw(checksDiv, '端口', portStatus, `${portOk}/${portTotal} 开放`);
+  }
+
+  addCheckItem(checksDiv, '响应', checkMap.http, formatResponseTime);
+  addCheckItem(checksDiv, '📱 测速', checkMap.pagespeed_mobile, formatPagespeed);
+  addCheckItem(checksDiv, '💻 测速', checkMap.pagespeed_desktop, formatPagespeed);
+
+  card.appendChild(checksDiv);
+
+  // --- Expand Toggle ---
+  const toggle = document.createElement('div');
+  toggle.className = 'card-expand-toggle';
+  toggle.innerHTML = `<span class="arrow">▶</span> 查看详情`;
+  toggle.onclick = () => {
+    const details = card.querySelector('.card-details');
+    const arrow = toggle.querySelector('.arrow');
+    const isOpen = details.classList.toggle('open');
+    arrow.classList.toggle('open', isOpen);
+    toggle.innerHTML = isOpen
+      ? `<span class="arrow open">▶</span> 收起详情`
+      : `<span class="arrow">▶</span> 查看详情`;
+  };
+  card.appendChild(toggle);
+
+  // --- Details ---
+  const details = document.createElement('div');
+  details.className = 'card-details';
+  details.innerHTML = buildDetails(site);
+  card.appendChild(details);
+
+  return card;
+}
+
+// ========== Check Item Helpers ==========
+function addCheckItem(parent, label, check, formatter) {
+  if (!check) {
+    addCheckItemRaw(parent, label, 'skip', '未检查');
+    return;
+  }
+  if (Array.isArray(check)) {
+    // Don't handle arrays here, use addCheckItemRaw directly
+    return;
+  }
+  const status = check.status || 'skip';
+  const val = formatter ? formatter(check) : status;
+  addCheckItemRaw(parent, label, status, val);
+}
+
+function addCheckItemRaw(parent, label, status, value) {
+  const icons = { ok: '✅', warn: '⚠️', fail: '❌', skip: '⏭️' };
+  const valClass = status === 'warn' ? 'warn-text' : status === 'fail' ? 'fail-text' : '';
+  const item = document.createElement('div');
+  item.className = 'check-item';
+  item.innerHTML = `
+    <span class="check-icon">${icons[status] || '❓'}</span>
+    <span class="check-label">${label}</span>
+    <span class="check-value ${valClass}">${value || status}</span>
+  `;
+  parent.appendChild(item);
+}
+
+function formatHttp(check) {
+  if (!check || check.status === 'skip') return '—';
+  if (check.status === 'fail') return check.error || `${check.statusCode}`;
+  return `${check.statusCode} · ${fmtMs(check.elapsedMs)}`;
+}
+
+function formatSsl(check) {
+  if (!check || check.status === 'skip') return '—';
+  if (check.status === 'fail') return check.error || `过期/异常`;
+  const d = check.daysLeft;
+  if (d <= 7) return `⚠️ ${d} 天`;
+  if (d <= 30) return `⚠️ ${d} 天`;
+  return `${d} 天`;
+}
+
+function formatDns(check) {
+  if (!check || check.status === 'skip') return '—';
+  if (check.status === 'fail') return check.error || '解析失败';
+  const addrs = check.addresses || [];
+  return addrs[0] || '✓';
+}
+
+function formatResponseTime(check) {
+  if (!check || !check.elapsedMs) return '—';
+  return fmtMs(check.elapsedMs);
+}
+
+function formatPagespeed(check) {
+  if (!check || check.status === 'skip') return '跳过';
+  if (check.status === 'fail') return `得分 ${check.score}`;
+  return `${check.score} 分`;
+}
+
+// ========== Details Panel ==========
+function buildDetails(site) {
+  const c = site.checks || {};
+  let html = '';
+  for (const [key, check] of Object.entries(c)) {
+    html += detailSection(key, check, site.hostname);
+  }
+  return html || '<div style="color:#999;font-size:13px">无详细信息</div>';
+}
+
+function detailSection(key, check, hostname) {
+  if (!check) return '';
+  const label = detailLabel(key);
+  let rows = '';
+
+  if (Array.isArray(check)) {
+    // Ports array
+    rows = check.map(p => {
+      const icon = p.status === 'ok' ? '✅' : '❌';
+      return `<tr><td>端口 ${p.port}</td><td>${icon} ${p.status === 'ok' ? '开放' : '不通'} · ${fmtMs(p.elapsedMs)}${p.error ? ' · ' + p.error : ''}</td></tr>`;
+    }).join('');
+  } else {
+    for (const [k, v] of Object.entries(check)) {
+      if (k === 'status' || k === 'elapsedMs' || v === null || v === undefined) continue;
+      if (k === 'body') continue;
+      let val = typeof v === 'object' ? JSON.stringify(v) : String(v);
+      if (k === 'addresses' && Array.isArray(v)) val = v.join(', ');
+      if (k === 'issues' && Array.isArray(v) && v.length > 0) {
+        rows += v.map(i => `<tr><td>issue</td><td class="detail-issue">⚠️ ${i}</td></tr>`).join('');
+        continue;
+      }
+      if (k === 'issues') continue;
+      const labelKey = detailFieldLabel(k);
+      rows += `<tr><td>${labelKey}</td><td>${val}</td></tr>`;
+    }
+  }
+
+  if (!rows) return '';
+  return `<div class="detail-section"><h4>${label}</h4><table>${rows}</table></div>`;
+}
+
+function detailLabel(key) {
+  const map = {
+    http: '🌐 HTTP 状态', ssl: '🔒 SSL 证书', dns: '🌍 DNS 解析',
+    ports: '🔌 端口连通性',
+    pagespeed_mobile: '📱 PageSpeed 手机端',
+    pagespeed_desktop: '💻 PageSpeed 电脑端',
+  };
+  return map[key] || key;
+}
+
+function detailFieldLabel(k) {
+  const map = {
+    statusCode: '状态码', elapsedMs: '延迟', error: '错误', note: '备注',
+    server: '服务器', contentType: '内容类型', location: '重定向',
+    daysLeft: '剩余天数', issuer: '颁发者', subject: '主题',
+    validFrom: '生效时间', validTo: '到期时间', addresses: '解析地址',
+    via: 'DNS 来源', ok: '正常',
+    overall: '整体', hostname: '主机', url: 'URL', name: '名称',
+    serial: '序列号', fingerprint: '指纹',
+    score: '评分', strategy: '策略', fcp: 'FCP', lcp: 'LCP', tbt: 'TBT', cls: 'CLS',
+  };
+  return map[k] || k;
+}
+
+// ========== Filter ==========
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.filter === filter);
+  });
+  render();
+}
+
+// ========== Utils ==========
+function statusLabel(status) {
+  const map = { ok: '✅ 正常', warn: '⚠️ 警告', fail: '❌ 异常', skip: '⏭️ 跳过' };
+  return map[status] || status;
+}
+
+function fmtMs(ms) {
+  if (ms === undefined || ms === null) return '—';
+  if (ms < 1000) return `${Math.round(ms)}ms`;
+  return `${(ms / 1000).toFixed(1)}s`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+{
+  "updatedAt": "2026-07-21T06:35:06.064Z",
+  "updatedAtCN": "2026/7/21 14:35:06",
+  "sites": [
+    {
+      "name": "Example",
+      "url": "https://example.com",
+      "hostname": "example.com",
+      "checks": {
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 39,
+          "issuer": "SSL Corporation",
+          "subject": "example.com",
+          "validFrom": "May 31 21:39:12 2026 GMT",
+          "validTo": "Aug 29 21:41:26 2026 GMT",
+          "error": null,
+          "elapsedMs": 378
+        },
+        "ports": [
+          {
+            "port": 80,
+            "status": "ok",
+            "elapsedMs": 204,
+            "error": null
+          },
+          {
+            "port": 443,
+            "status": "ok",
+            "elapsedMs": 213,
+            "error": null
+          }
+        ],
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 655,
+          "error": null,
+          "details": {
+            "server": "cloudflare",
+            "contentType": "text/html",
+            "location": null
+          }
+        },
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "172.66.147.243",
+            "104.20.23.154"
+          ],
+          "error": null,
+          "via": "fallback",
+          "note": "系统 DNS 失败，使用备用 DNS"
+        },
+        "cdn": {
+          "status": "skip",
+          "note": "CDN 回源检查 待实现"
+        },
+        "mobileAdapt": {
+          "status": "skip",
+          "note": "移动端适配检查 待实现"
+        },
+        "security": {
+          "status": "skip",
+          "note": "安全漏洞扫描 待实现"
+        }
+      },
+      "overall": "ok",
+      "overallFailCount": 0
+    },
+    {
+      "name": "Bing",
+      "url": "https://www.bing.com",
+      "hostname": "www.bing.com",
+      "checks": {
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "23.210.216.166",
+            "23.210.216.149",
+            "23.210.216.158",
+            "23.210.216.155"
+          ],
+          "error": null,
+          "via": "fallback",
+          "note": "系统 DNS 失败，使用备用 DNS"
+        },
+        "ports": [
+          {
+            "port": 443,
+            "status": "ok",
+            "elapsedMs": 204,
+            "error": null
+          }
+        ],
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 183,
+          "issuer": "Microsoft Corporation",
+          "subject": "r.bing.com",
+          "validFrom": "Jul  6 17:53:07 2026 GMT",
+          "validTo": "Jan 20 17:53:07 2027 GMT",
+          "error": null,
+          "elapsedMs": 828
+        },
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 1127,
+          "error": null,
+          "details": {
+            "server": null,
+            "contentType": "text/html; charset=utf-8",
+            "location": null
+          }
+        },
+        "cdn": {
+          "status": "skip",
+          "note": "CDN 回源检查 待实现"
+        },
+        "mobileAdapt": {
+          "status": "skip",
+          "note": "移动端适配检查 待实现"
+        },
+        "security": {
+          "status": "skip",
+          "note": "安全漏洞扫描 待实现"
+        }
+      },
+      "overall": "ok",
+      "overallFailCount": 0
+    },
+    {
+      "name": "Baidu",
+      "url": "https://www.baidu.com",
+      "hostname": "www.baidu.com",
+      "checks": {
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "180.101.51.73",
+            "180.101.49.44"
+          ],
+          "error": null,
+          "via": "fallback",
+          "note": "系统 DNS 失败，使用备用 DNS"
+        },
+        "ports": [
+          {
+            "port": 80,
+            "status": "ok",
+            "elapsedMs": 30,
+            "error": null
+          },
+          {
+            "port": 443,
+            "status": "ok",
+            "elapsedMs": 23,
+            "error": null
+          }
+        ],
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 20,
+          "issuer": "GlobalSign nv-sa",
+          "subject": "baidu.com",
+          "validFrom": "Jul  9 07:01:02 2025 GMT",
+          "validTo": "Aug 10 07:01:01 2026 GMT",
+          "error": null,
+          "elapsedMs": 71
+        },
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 87,
+          "error": null,
+          "details": {
+            "server": "BWS/1.1",
+            "contentType": "text/html",
+            "location": null
+          }
+        },
+        "cdn": {
+          "status": "skip",
+          "note": "CDN 回源检查 待实现"
+        },
+        "mobileAdapt": {
+          "status": "skip",
+          "note": "移动端适配检查 待实现"
+        },
+        "security": {
+          "status": "skip",
+          "note": "安全漏洞扫描 待实现"
+        }
+      },
+      "overall": "ok",
+      "overallFailCount": 0
+    }
+  ]
+}

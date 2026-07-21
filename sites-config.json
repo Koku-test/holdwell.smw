@@ -1,0 +1,43 @@
+{
+  "description": "站点健康巡检配置 — 在此添加要监控的站点",
+  "_instructions": "sites 数组中每个站点必填: name, url。pagespeedApiKey 在 global 中配置，留空则跳过 PageSpeed 检查。",
+  "global": {
+    "timeoutMs": 8000,
+    "concurrency": 3,
+    "dnsResolvers": ["8.8.8.8", "1.1.1.1"],
+    "sslWarningDays": [60, 30, 14, 7],
+    "responseTimeWarnMs": 3000,
+    "responseTimeCritMs": 8000,
+    "retryCount": 3,
+    "pagespeedApiKey": null
+  },
+  "sites": [
+    {
+      "name": "Example",
+      "url": "https://example.com",
+      "expectStatus": 200,
+      "checkPorts": [80, 443],
+      "checkDns": true,
+      "checkSsl": true,
+      "checkPagespeed": true
+    },
+    {
+      "name": "Bing",
+      "url": "https://www.bing.com",
+      "expectStatus": 200,
+      "checkPorts": [443],
+      "checkDns": true,
+      "checkSsl": true,
+      "checkPagespeed": true
+    },
+    {
+      "name": "Baidu",
+      "url": "https://www.baidu.com",
+      "expectStatus": 200,
+      "checkPorts": [80, 443],
+      "checkDns": true,
+      "checkSsl": true,
+      "checkPagespeed": true
+    }
+  ]
+}
