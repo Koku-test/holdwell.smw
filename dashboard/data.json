@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-21T09:52:54.650Z",
-  "updatedAtCN": "2026/7/21 17:52:54",
+  "updatedAt": "2026-07-22T04:01:13.564Z",
+  "updatedAtCN": "2026/7/22 12:01:13",
   "sites": [
     {
       "name": "品牌站",
@@ -10,39 +10,39 @@
         "dns": {
           "status": "ok",
           "addresses": [
-            "8.25.82.142"
+            "163.181.246.145"
           ],
           "error": null,
           "via": "system"
         },
         "ssl": {
           "status": "ok",
-          "daysLeft": 201,
+          "daysLeft": 200,
           "issuer": "WoTrus CA Limited",
           "subject": "www.holdwell.net",
           "validFrom": "Jan  7 00:00:00 2026 GMT",
           "validTo": "Feb  7 23:59:59 2027 GMT",
           "error": null,
-          "elapsedMs": 781
+          "elapsedMs": 1140
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 769,
+            "elapsedMs": 1217,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 413,
+            "elapsedMs": 270,
             "error": null
           }
         ],
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 1157,
+          "elapsedMs": 1495,
           "error": null,
           "details": {
             "server": "Tengine",
@@ -84,30 +84,30 @@
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 1304,
+            "elapsedMs": 1592,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 250,
+            "elapsedMs": 342,
             "error": null
           }
         ],
         "ssl": {
           "status": "ok",
-          "daysLeft": 56,
+          "daysLeft": 55,
           "issuer": "DigiCert Inc",
           "subject": "holdwellgroup.com",
           "validFrom": "Jun 18 00:00:00 2026 GMT",
           "validTo": "Sep 15 23:59:59 2026 GMT",
           "error": null,
-          "elapsedMs": 1612
+          "elapsedMs": 2044
         },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 2046,
+          "elapsedMs": 2527,
           "error": null,
           "details": {
             "server": "nginx/1.20.1",
@@ -145,34 +145,34 @@
           "error": null,
           "via": "system"
         },
-        "ports": [
-          {
-            "port": 80,
-            "status": "ok",
-            "elapsedMs": 352,
-            "error": null
-          },
-          {
-            "port": 443,
-            "status": "ok",
-            "elapsedMs": 4,
-            "error": null
-          }
-        ],
         "ssl": {
           "status": "ok",
-          "daysLeft": 38,
+          "daysLeft": 37,
           "issuer": "Let's Encrypt",
           "subject": "www.holdwellparts.com",
           "validFrom": "May 30 15:05:03 2026 GMT",
           "validTo": "Aug 28 15:05:02 2026 GMT",
           "error": null,
-          "elapsedMs": 363
+          "elapsedMs": 286
         },
+        "ports": [
+          {
+            "port": 80,
+            "status": "ok",
+            "elapsedMs": 273,
+            "error": null
+          },
+          {
+            "port": 443,
+            "status": "ok",
+            "elapsedMs": 283,
+            "error": null
+          }
+        ],
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 1062,
+          "elapsedMs": 561,
           "error": null,
           "details": {
             "server": "cloudflare",
@@ -214,13 +214,13 @@
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 353,
+            "elapsedMs": 554,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 3,
+            "elapsedMs": 6,
             "error": null
           }
         ],
@@ -232,12 +232,12 @@
           "validFrom": "May 29 06:39:02 2026 GMT",
           "validTo": "Aug 27 06:39:01 2026 GMT",
           "error": null,
-          "elapsedMs": 367
+          "elapsedMs": 568
         },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 1419,
+          "elapsedMs": 1308,
           "error": null,
           "details": {
             "server": "cloudflare",
@@ -277,32 +277,32 @@
         },
         "ssl": {
           "status": "ok",
-          "daysLeft": 52,
+          "daysLeft": 51,
           "issuer": "Let's Encrypt",
           "subject": "www.stopsolenoid.com",
           "validFrom": "Jun 13 18:04:04 2026 GMT",
           "validTo": "Sep 11 18:04:03 2026 GMT",
           "error": null,
-          "elapsedMs": 335
+          "elapsedMs": 312
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 320,
+            "elapsedMs": 294,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 322,
+            "elapsedMs": 339,
             "error": null
           }
         ],
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 1544,
+          "elapsedMs": 1191,
           "error": null,
           "details": {
             "server": "cloudflare",
@@ -342,32 +342,32 @@
         },
         "ssl": {
           "status": "ok",
-          "daysLeft": 62,
+          "daysLeft": 61,
           "issuer": "Let's Encrypt",
           "subject": "*.hwlifts.com",
           "validFrom": "Jun 24 02:41:19 2026 GMT",
           "validTo": "Sep 22 02:41:18 2026 GMT",
           "error": null,
-          "elapsedMs": 748
+          "elapsedMs": 775
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 945,
+            "elapsedMs": 1038,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 54,
+            "elapsedMs": 394,
             "error": null
           }
         ],
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 1174,
+          "elapsedMs": 1352,
           "error": null,
           "details": {
             "server": "nginx/1.24.0",
@@ -407,40 +407,40 @@
         },
         "ssl": {
           "status": "ok",
-          "daysLeft": 114,
+          "daysLeft": 113,
           "issuer": "DigiCert Inc",
           "subject": "freepartsbook.com",
           "validFrom": "May 12 00:00:00 2026 GMT",
           "validTo": "Nov 12 23:59:59 2026 GMT",
           "error": null,
-          "elapsedMs": 707
-        },
-        "http": {
-          "status": "fail",
-          "statusCode": 502,
-          "elapsedMs": 757,
-          "error": "期望状态码 200，实际 502",
-          "details": {
-            "server": "nginx/1.24.0",
-            "contentType": "text/html",
-            "location": null
-          },
-          "redirect": null
+          "elapsedMs": 668
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 716,
+            "elapsedMs": 677,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 145,
+            "elapsedMs": 190,
             "error": null
           }
         ],
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 1030,
+          "error": null,
+          "details": {
+            "server": "nginx/1.24.0",
+            "contentType": "text/html;charset=utf-8",
+            "location": null
+          },
+          "redirect": null
+        },
         "cdn": {
           "status": "skip",
           "note": "CDN 回源检查 待实现"
@@ -454,8 +454,8 @@
           "note": "安全漏洞扫描 待实现"
         }
       },
-      "overall": "fail",
-      "overallFailCount": 1
+      "overall": "ok",
+      "overallFailCount": 0
     },
     {
       "name": "美国项目站",
@@ -474,30 +474,30 @@
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 563,
+            "elapsedMs": 464,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 4,
+            "elapsedMs": 55,
             "error": null
           }
         ],
         "ssl": {
           "status": "ok",
-          "daysLeft": 37,
+          "daysLeft": 36,
           "issuer": "Let's Encrypt",
           "subject": "www.partwerks.com",
           "validFrom": "May 29 10:59:03 2026 GMT",
           "validTo": "Aug 27 10:59:02 2026 GMT",
           "error": null,
-          "elapsedMs": 578
+          "elapsedMs": 539
         },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 775,
+          "elapsedMs": 591,
           "error": null,
           "details": {
             "server": "cloudflare",
