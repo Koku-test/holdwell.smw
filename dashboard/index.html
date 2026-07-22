@@ -159,6 +159,32 @@
   .legend-dot.warn { background: #f59e0b; }
   .legend-dot.fail { background: #ef4444; }
   .legend-dot.skip { background: #9ca3af; }
+
+  /* ========== Retry Button ========== */
+  .retry-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; background: #f3f4f6;
+    transition: all .15s; position: relative; flex-shrink: 0;
+  }
+  .retry-btn:hover { background: #e5e7eb; transform: scale(1.1); }
+
+  .retry-menu {
+    position: absolute; top: 100%; right: 0; margin-top: 4px;
+    background: #fff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    z-index: 100; display: none; padding: 4px;
+  }
+  .retry-menu.show { display: flex; gap: 4px; }
+  .retry-menu-item {
+    padding: 8px 12px; font-size: 12px; cursor: pointer; white-space: nowrap;
+    border-radius: 8px; transition: background .1s; font-weight: 500;
+    border: 1px solid #eee; text-align: center;
+  }
+  .retry-menu-item:hover { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+  .retry-overlay {
+    position: fixed; inset: 0; z-index: 99; display: none;
+  }
+  .retry-overlay.show { display: block; }
 </style>
 </head>
 <body>
@@ -175,6 +201,7 @@
   <div class="summary-stat warn"><span class="num" id="warnCount">—</span> 警告</div>
   <div class="summary-stat fail"><span class="num" id="failCount">—</span> 异常</div>
   <span class="last-update" id="lastUpdate">加载中…</span>
+  <span class="last-update" id="phaseInfo" style="margin-left:4px"></span>
 </div>
 
 <!-- ===== Filter ===== -->
@@ -240,6 +267,10 @@ function render() {
   document.getElementById('warnCount').textContent = warn;
   document.getElementById('failCount').textContent = fail;
   document.getElementById('lastUpdate').textContent = `更新: ${data.updatedAtCN || '未知'}`;
+  const phaseInfo = [];
+  if (data.phase1At) phaseInfo.push(`基础: ${new Date(data.phase1At).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}`);
+  if (data.phase2At) phaseInfo.push(`浏览器: ${new Date(data.phase2At).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}`);
+  document.getElementById('phaseInfo').textContent = phaseInfo.length > 0 ? `(${phaseInfo.join(' | ')})` : '';
 
   // Filter tab counts
   document.querySelectorAll('.filter-tab').forEach(t => {
@@ -279,12 +310,15 @@ function buildCard(site) {
   const header = document.createElement('div');
   header.className = 'card-header';
   header.innerHTML = `
-    <div>
+    <div style="flex:1">
       <div class="name">
         ${site.name}
         <span class="status-badge ${site.overall}">${statusLabel(site.overall)}</span>
       </div>
       <span class="url">${site.url}${site.owner ? ' · ' + site.owner : ''}</span>
+    </div>
+    <div class="retry-btn" onclick="event.stopPropagation(); showRetryMenu(this, '${site.name.replace(/'/g, "\\'")}', '${site.url.replace(/'/g, "\\'")}')" title="重新检测此站点">
+      🔄
     </div>
   `;
   card.appendChild(header);
@@ -308,6 +342,9 @@ function buildCard(site) {
   addCheckItem(checksDiv, '响应', checkMap.http, formatResponseTime);
   addCheckItem(checksDiv, '📱 测速', checkMap.pagespeed_mobile, formatPagespeed);
   addCheckItem(checksDiv, '💻 测速', checkMap.pagespeed_desktop, formatPagespeed);
+  addCheckItem(checksDiv, '📦 CDN', checkMap.cdn, formatCdn);
+  addCheckItem(checksDiv, '📲 移动端', checkMap.mobileAdapt, formatMobileAdapt);
+  addCheckItem(checksDiv, '🔒 安全', checkMap.security, formatSecurity);
 
   card.appendChild(checksDiv);
 
@@ -398,6 +435,25 @@ function formatPagespeed(check) {
   return `${check.score} 分`;
 }
 
+function formatCdn(check) {
+  if (!check || check.status === 'skip') return '—';
+  if (check.status === 'fail') return `${check.failedResources?.length || 0} 个失败`;
+  return '✅';
+}
+
+function formatMobileAdapt(check) {
+  if (!check || check.status === 'skip') return '—';
+  if (check.status === 'fail') return `${check.issues?.length || 0} 个问题`;
+  return '✅';
+}
+
+function formatSecurity(check) {
+  if (!check || check.status === 'skip') return '—';
+  if (check.status === 'fail') return check.error || '异常';
+  if (check.status === 'warn') return `${check.issues?.length || 0} 项缺失`;
+  return '✅';
+}
+
 // ========== Details Panel ==========
 function buildDetails(site) {
   const c = site.checks || {};
@@ -445,6 +501,9 @@ function detailLabel(key) {
     ports: '🔌 端口连通性',
     pagespeed_mobile: '📱 PageSpeed 手机端',
     pagespeed_desktop: '💻 PageSpeed 电脑端',
+    cdn: '📦 CDN 回源',
+    mobileAdapt: '📲 移动端适配',
+    security: '🔒 安全响应头',
   };
   return map[key] || key;
 }
@@ -482,6 +541,61 @@ function fmtMs(ms) {
   if (ms === undefined || ms === null) return '—';
   if (ms < 1000) return `${Math.round(ms)}ms`;
   return `${(ms / 1000).toFixed(1)}s`;
+}
+
+// ========== Retry Menu ==========
+// 修改为你的仓库地址
+const GITHUB_WORKFLOW_URL = 'https://github.com/Koku-test/holdwell.smw/actions/workflows/health-check.yml';
+let activeRetryMenu = null;
+
+function showRetryMenu(btn, siteName, siteUrl) {
+  // 关闭已打开的菜单
+  if (activeRetryMenu) {
+    activeRetryMenu.remove();
+    document.querySelector('.retry-overlay')?.remove();
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'retry-overlay show';
+  overlay.onclick = () => {
+    overlay.remove();
+    menu.remove();
+    activeRetryMenu = null;
+  };
+
+  const menu = document.createElement('div');
+  menu.className = 'retry-menu show';
+  menu.innerHTML = `
+    <div class="retry-menu-item" onclick="triggerRetry('basic', '${siteName.replace(/'/g, "\\'")}', '${siteUrl.replace(/'/g, "\\'")}')">
+      基础检测
+    </div>
+    <div class="retry-menu-item" onclick="triggerRetry('browser', '${siteName.replace(/'/g, "\\'")}', '${siteUrl.replace(/'/g, "\\'")}')">
+      浏览器检测
+    </div>
+    <div class="retry-menu-item" onclick="triggerRetry('all', '${siteName.replace(/'/g, "\\'")}', '${siteUrl.replace(/'/g, "\\'")}')">
+      全部检测
+    </div>
+  `;
+
+  btn.appendChild(overlay);
+  btn.appendChild(menu);
+  activeRetryMenu = menu;
+}
+
+function triggerRetry(mode, siteName, siteUrl) {
+  // 关闭菜单
+  if (activeRetryMenu) {
+    activeRetryMenu.remove();
+    document.querySelector('.retry-overlay')?.remove();
+    activeRetryMenu = null;
+  }
+
+  // 打开 GitHub Actions 页面
+  window.open(GITHUB_WORKFLOW_URL, '_blank');
+
+  // 提示
+  const modeLabel = mode === 'basic' ? '基础检测' : mode === 'browser' ? '浏览器检测' : '全部检测';
+  alert(`已打开 GitHub Actions 页面\n\n请点击 "Run workflow" →\n  Mode: ${modeLabel}\n  Site: ${siteName}\n→ 点击绿色按钮执行\n\n此检测独立于定时任务`);
 }
 </script>
 </body>

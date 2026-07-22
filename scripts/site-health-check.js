@@ -3,16 +3,24 @@
  * =====================
  * 输出: dashboard/data.json（供 HTML 看台读取）
  *
- * 已实现:
- *   ✅ 1. 站点无法访问 (HTTP/DNS/TCP) — 48h, 连续 3 次, 第 2 次告警
- *   ✅ 2. SSL 证书过期 (剩余天数记录, ≤7 天告警) — 48h
- *   ✅ 3. DNS 配置异常 (挂在 #1 下) — 48h
- *   ✅ 5. 页面加载超慢 (HTTP 响应时间 + PageSpeed Insights) — 48h
+ * 运行模式:
+ *   node scripts/site-health-check.js              → 全部检测（本地测试用）
+ *   node scripts/site-health-check.js --basic      → Phase 1: 基础检查 (每96h)
+ *   node scripts/site-health-check.js --browser    → Phase 2: 浏览器检测 (每7天)
  *
- * 待实现:
- *   ⏳ 4. CDN 回源失败 (Puppeteer 瀑布流分析) — 48h
- *   ⏳ 8. 移动端适配 (Puppeteer 400x738 截图 + vision 分析) — 48h
- *   ⏳ 9. 安全漏洞 (Snyk 依赖+网站扫描) — 每周, 高危告警
+ * 合并逻辑:
+ *   Phase 1 跑完写 data.json，保留上一次 Phase 2 的结果
+ *   Phase 2 跑完写 data.json，保留上一次 Phase 1 的结果
+ *
+ * 检查项:
+ *   ✅ 1. 站点无法访问 (HTTP/DNS/TCP) — 96h
+ *   ✅ 2. SSL 证书过期 (≤7 天告警) — 96h
+ *   ✅ 3. DNS 配置异常 — 96h
+ *   ✅ 4. CDN 回源失败 (Puppeteer 网络拦截) — 7天
+ *   ✅ 5. 页面加载超慢 (Lighthouse 本地) — 7天
+ *   ✅ 6. 移动端适配 (Puppeteer 400x738) — 7天
+ *   ✅ 7. 安全响应头 (HSTS/CSP 等) — 96h
+ *   ✅ 钉钉通知 — 异常时 @ 对应负责人
  */
 
 const fs = require('fs');
@@ -21,6 +29,10 @@ const http = require('http');
 const https = require('https');
 const net = require('net');
 const dns = require('dns');
+const crypto = require('crypto');
+const lighthouse = require('lighthouse');
+const chromeLauncher = require('chrome-launcher');
+const puppeteer = require('puppeteer-core');
 
 // ============== Paths ==============
 const ROOT = path.resolve(__dirname, '..');
@@ -32,7 +44,6 @@ function now() { return new Date().toISOString(); }
 function nowCN() {
   return new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
 }
-function elapsed(start) { return Date.now() - start; }
 
 function httpGet(url, timeoutMs, maxRedirects = 5) {
   return new Promise((resolve, reject) => {
@@ -40,7 +51,6 @@ function httpGet(url, timeoutMs, maxRedirects = 5) {
     const lib = parsed.protocol === 'https:' ? https : http;
     const start = Date.now();
     const req = lib.get(url, { timeout: timeoutMs, headers: { 'User-Agent': 'SOMW-HealthCheck/1.0' } }, (res) => {
-      // 跟随重定向
       if ([301, 302, 303, 307, 308].includes(res.statusCode) && res.headers.location && maxRedirects > 0) {
         const redirectUrl = new URL(res.headers.location, url).href;
         req.destroy();
@@ -62,9 +72,8 @@ function httpGet(url, timeoutMs, maxRedirects = 5) {
   });
 }
 
-// ============== Checks ==============
+// ============== Phase 1 Checks (基础) ==============
 
-/** 1. HTTP 可达性检查 */
 async function checkHttpReachability(url, expectStatus, timeoutMs) {
   const result = { status: 'ok', statusCode: null, elapsedMs: 0, error: null, details: {}, redirect: null };
   try {
@@ -83,7 +92,6 @@ async function checkHttpReachability(url, expectStatus, timeoutMs) {
       contentType: res.headers['content-type'] || null,
       location: res.headers['location'] || null,
     };
-    // 重定向备注
     if (res.redirectedFrom) {
       result.redirect = { from: res.redirectedFrom, to: res.redirectedTo, code: res.originalStatusCode };
       result.note = `${res.originalStatusCode} → ${res.redirectedTo}`;
@@ -96,7 +104,6 @@ async function checkHttpReachability(url, expectStatus, timeoutMs) {
   }
 }
 
-/** 2. SSL 证书检查 */
 function checkSsl(hostname, port, timeoutMs) {
   return new Promise((resolve) => {
     const result = { status: 'ok', daysLeft: 0, issuer: null, subject: null, validFrom: null, validTo: null, error: null };
@@ -115,12 +122,10 @@ function checkSsl(hostname, port, timeoutMs) {
         result.subject = (cert.subject && cert.subject.CN) || 'unknown';
         result.validFrom = cert.valid_from;
         result.validTo = cert.valid_to;
-        result.elapsedMs = elapsed(start);
-
+        result.elapsedMs = Date.now() - start;
         if (result.daysLeft < 0) result.status = 'fail';
         else if (result.daysLeft <= 7) result.status = 'fail';
         else result.status = 'ok';
-
         ts.end(); socket.destroy();
         resolve(result);
       });
@@ -132,7 +137,6 @@ function checkSsl(hostname, port, timeoutMs) {
   });
 }
 
-/** 3. DNS 解析 */
 async function checkDns(hostname, resolvers) {
   const result = { status: 'ok', addresses: [], error: null, via: 'system' };
   try {
@@ -154,7 +158,6 @@ async function checkDns(hostname, resolvers) {
   return result;
 }
 
-/** 端口连通性 */
 async function checkPorts(hostname, ports, timeoutMs) {
   const results = [];
   for (const port of ports) {
@@ -179,61 +182,26 @@ async function checkPorts(hostname, ports, timeoutMs) {
   return results;
 }
 
-/** 5. PageSpeed Insights 评分检查 */
-async function checkPagespeedInsights(url, strategy, apiKey) {
-  const result = {
-    status: 'ok',
-    strategy,
-    score: null,
-    fcp: null, lcp: null, tbt: null, cls: null,
-    error: null,
-  };
-
-  if (!apiKey) {
-    result.status = 'skip';
-    result.note = '未配置 pagespeedApiKey';
-    return result;
-  }
-
-  const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${strategy}&key=${apiKey}`;
-
+async function checkSecurityHeaders(url, timeoutMs) {
+  const result = { status: 'ok', issues: [], error: null };
   try {
-    const start = Date.now();
-    const res = await httpGet(endpoint, 60000); // 60s timeout
-    const elapsed = Date.now() - start;
-
-    if (res.statusCode !== 200) {
-      result.status = 'fail';
-      result.error = `API 返回 ${res.statusCode}`;
-      return result;
+    const res = await httpGet(url, timeoutMs);
+    const headers = res.headers || {};
+    const securityHeaders = {
+      'strict-transport-security': 'HSTS',
+      'content-security-policy': 'CSP',
+      'x-frame-options': 'X-Frame-Options',
+      'x-content-type-options': 'X-Content-Type-Options',
+      'referrer-policy': 'Referrer-Policy',
+      'permissions-policy': 'Permissions-Policy',
+    };
+    for (const [header, name] of Object.entries(securityHeaders)) {
+      if (!headers[header]) result.issues.push(`缺少 ${name}`);
     }
-
-    const data = JSON.parse(res.body);
-    const lr = data.lighthouseResult;
-    if (!lr || !lr.categories || !lr.categories.performance) {
-      result.status = 'fail';
-      result.error = 'API 响应结构异常';
-      return result;
+    if (result.issues.length > 0) {
+      result.status = 'warn';
+      result.note = result.issues.join(', ');
     }
-
-    const rawScore = lr.categories.performance.score;
-    result.score = Math.round(rawScore * 100);
-    result.elapsedMs = elapsed;
-
-    // 核心指标
-    const audits = lr.audits || {};
-    if (audits['first-contentful-paint']) result.fcp = audits['first-contentful-paint'].displayValue;
-    if (audits['largest-contentful-paint']) result.lcp = audits['largest-contentful-paint'].displayValue;
-    if (audits['total-blocking-time']) result.tbt = audits['total-blocking-time'].displayValue;
-    if (audits['cumulative-layout-shift']) result.cls = audits['cumulative-layout-shift'].displayValue;
-
-    // 评分判定
-    const threshold = strategy === 'mobile' ? 70 : 90;
-    if (result.score < threshold) {
-      result.status = 'fail';
-      result.error = `${strategy === 'mobile' ? '手机' : '电脑'}端评分 ${result.score}，低于阈值 ${threshold}`;
-    }
-
     return result;
   } catch (e) {
     result.status = 'fail';
@@ -242,14 +210,269 @@ async function checkPagespeedInsights(url, strategy, apiKey) {
   }
 }
 
-/** 占位检查 */
-function checkPlaceholder(name) {
-  return { status: 'skip', note: `${name} 待实现` };
+// ============== Phase 2 Checks (浏览器) ==============
+
+async function checkPagespeedWithLighthouse(url, strategy, chrome) {
+  const result = { status: 'ok', strategy, score: null, fcp: null, lcp: null, tbt: null, cls: null, error: null };
+  try {
+    const options = {
+      logLevel: 'error', output: 'json', onlyCategories: ['performance'], port: chrome.port,
+    };
+    if (strategy === 'mobile') {
+      options.formFactor = 'mobile';
+      options.screenEmulation = { mobile: true, width: 412, height: 823, deviceScaleFactor: 1.75, disabled: false };
+    } else {
+      options.formFactor = 'desktop';
+      options.screenEmulation = { mobile: false, width: 1350, height: 940, deviceScaleFactor: 1, disabled: false };
+    }
+    const start = Date.now();
+    const runnerResult = await lighthouse(url, options);
+    const elapsed = Date.now() - start;
+    const lhr = runnerResult.lhr;
+    if (!lhr || !lhr.categories || !lhr.categories.performance) {
+      result.status = 'fail';
+      result.error = 'Lighthouse 响应结构异常';
+      return result;
+    }
+    result.score = Math.round(lhr.categories.performance.score * 100);
+    result.elapsedMs = elapsed;
+    const audits = lhr.audits || {};
+    if (audits['first-contentful-paint']) result.fcp = audits['first-contentful-paint'].displayValue;
+    if (audits['largest-contentful-paint']) result.lcp = audits['largest-contentful-paint'].displayValue;
+    if (audits['total-blocking-time']) result.tbt = audits['total-blocking-time'].displayValue;
+    if (audits['cumulative-layout-shift']) result.cls = audits['cumulative-layout-shift'].displayValue;
+    const threshold = strategy === 'mobile' ? 70 : 90;
+    if (result.score < threshold) {
+      result.status = 'fail';
+      result.error = `${strategy === 'mobile' ? '手机' : '电脑'}端评分 ${result.score}，低于阈值 ${threshold}`;
+    }
+    return result;
+  } catch (e) {
+    result.status = 'fail';
+    result.error = e.message;
+    return result;
+  }
+}
+
+async function checkCdnBackToSource(url, browser) {
+  const result = { status: 'ok', failedResources: [], error: null };
+  const page = await browser.newPage();
+  const failedResources = [];
+  page.on('response', (response) => {
+    if (response.status() >= 400) {
+      failedResources.push({ url: response.url(), status: response.status(), type: response.request().resourceType() });
+    }
+  });
+  page.on('requestfailed', (request) => {
+    const failure = request.failure();
+    failedResources.push({ url: request.url(), status: 0, error: failure ? failure.errorText : 'unknown', type: request.resourceType() });
+  });
+  try {
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    if (failedResources.length > 0) {
+      result.status = 'fail';
+      result.failedResources = failedResources.slice(0, 10);
+      result.error = `${failedResources.length} 个资源加载失败`;
+      result.note = failedResources.slice(0, 3).map(r => r.url).join(', ');
+    }
+    await page.close();
+    return result;
+  } catch (e) {
+    await page.close().catch(() => {});
+    result.status = 'fail';
+    result.error = e.message;
+    return result;
+  }
+}
+
+async function checkMobileAdapt(url, browser) {
+  const result = { status: 'ok', issues: [], error: null };
+  const page = await browser.newPage();
+  await page.setViewport({ width: 400, height: 738 });
+  try {
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    const checks = await page.evaluate(() => {
+      const issues = [];
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (!viewport) issues.push('缺少 viewport meta 标签');
+      const bodyWidth = Math.max(document.body.scrollWidth, document.documentElement.scrollWidth);
+      if (bodyWidth > window.innerWidth * 1.15) {
+        issues.push(`页面水平溢出 (内容${bodyWidth}px > 视口${window.innerWidth}px)`);
+      }
+      let smallFontCount = 0;
+      const allElements = document.querySelectorAll('p, span, a, li, td, div, h1, h2, h3, h4, h5, h6');
+      for (const el of allElements) {
+        const fontSize = parseFloat(window.getComputedStyle(el).fontSize);
+        if (fontSize > 0 && fontSize < 12 && el.textContent.trim().length > 0) { smallFontCount++; if (smallFontCount > 10) break; }
+      }
+      if (smallFontCount > 3) issues.push(`${smallFontCount} 处文字过小 (<12px)`);
+      let smallTapCount = 0;
+      const tappable = document.querySelectorAll('a, button, [role="button"], input[type="submit"]');
+      for (const el of tappable) {
+        const rect = el.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0 && (rect.width < 44 || rect.height < 44)) smallTapCount++;
+      }
+      if (smallTapCount > 5) issues.push(`${smallTapCount} 个可点击元素过小 (<44px)`);
+      return issues;
+    });
+    result.issues = checks;
+    if (checks.length > 0) {
+      result.status = 'fail';
+      result.error = checks.join('; ');
+    }
+    await page.close();
+    return result;
+  } catch (e) {
+    await page.close().catch(() => {});
+    result.status = 'fail';
+    result.error = e.message;
+    return result;
+  }
+}
+
+// ============== 检查项标签 ==============
+function checkLabel(key) {
+  const map = {
+    http: 'HTTP 可达性', ssl: 'SSL 证书', dns: 'DNS 解析', ports: '端口连通',
+    pagespeed_mobile: '手机端性能', pagespeed_desktop: '电脑端性能',
+    cdn: 'CDN 回源', mobileAdapt: '移动端适配', security: '安全响应头',
+  };
+  return map[key] || key;
+}
+
+// ============== 整体状态计算 ==============
+function calcOverall(entry) {
+  let failCount = 0;
+  for (const [key, val] of Object.entries(entry.checks)) {
+    if (!val || val.status === 'skip') continue;
+    if (val.status === 'fail') failCount++;
+    if (Array.isArray(val)) {
+      const arrFails = val.filter(v => v.status === 'fail').length;
+      if (arrFails > 0) failCount++;
+    }
+  }
+  entry.overallFailCount = failCount;
+  if (failCount > 0) {
+    entry.overall = 'fail';
+  } else {
+    let hasWarn = false;
+    for (const [key, val] of Object.entries(entry.checks)) {
+      if (!val || val.status === 'skip' || val.status === 'ok') continue;
+      if (val.status === 'warn') { hasWarn = true; break; }
+      if (Array.isArray(val)) {
+        if (val.some(v => v.status === 'warn')) { hasWarn = true; break; }
+      }
+    }
+    entry.overall = hasWarn ? 'warn' : 'ok';
+  }
+}
+
+// ============== 合并上一轮结果 ==============
+function readExistingData() {
+  try {
+    if (fs.existsSync(DATA_PATH)) {
+      return JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+    }
+  } catch (e) { /* ignore */ }
+  return null;
+}
+
+function mergeExistingChecks(entry, existing, phase2Keys) {
+  if (!existing || !existing.checks) return;
+  for (const key of phase2Keys) {
+    if (existing.checks[key] && !entry.checks[key]) {
+      entry.checks[key] = { ...existing.checks[key], _fromPrevious: true };
+    }
+  }
+}
+
+// ============== 钉钉通知 ==============
+
+async function sendDingtalkPerSite(entry, dingtalkConfig) {
+  const { webhook, signKey } = dingtalkConfig || {};
+  if (!webhook || webhook.includes('YOUR_TOKEN')) return;
+
+  const mobiles = entry.dingtalkMobiles || [];
+  const issues = [];
+  for (const [key, check] of Object.entries(entry.checks || {})) {
+    if (!check || check.status === 'skip' || check.status === 'ok') continue;
+    if (Array.isArray(check)) {
+      for (const p of check) {
+        if (p.status === 'fail') issues.push(`端口${p.port}${p.error || '不通'}`);
+      }
+    } else if (check.status === 'fail') {
+      issues.push(checkLabel(key) + (check.error ? check.error : '异常'));
+    } else if (check.status === 'warn') {
+      issues.push(checkLabel(key) + '需关注');
+    }
+  }
+
+  const isFail = entry.overall === 'fail';
+  const icon = isFail ? '❌' : '⚠️';
+  const atStr = mobiles.length > 0 ? mobiles.map(m => `@${m}`).join(' ') : '';
+  const issueStr = issues.join('、');
+  let text = `${icon} ${atStr}，${entry.url} ${issueStr}，请知悉并及时协调运维侧进行处理~`;
+
+  let webhookUrl = webhook;
+  if (signKey && signKey !== 'SECxxx') {
+    const timestamp = Date.now();
+    const stringToSign = timestamp + '\n' + signKey;
+    const sign = encodeURIComponent(
+      crypto.createHmac('sha256', signKey).update(stringToSign).digest('base64')
+    );
+    webhookUrl += `&timestamp=${timestamp}&sign=${sign}`;
+  }
+
+  const payload = JSON.stringify({
+    msgtype: 'markdown',
+    markdown: { title: `站点健康告警 — ${entry.name}`, text },
+    at: { atMobiles: mobiles, isAtAll: false },
+  });
+
+  const parsed = new URL(webhookUrl);
+  const lib = parsed.protocol === 'https:' ? https : http;
+
+  console.log(`  📢 发送钉钉通知 → ${entry.name} (${mobiles.length} 人)`);
+
+  return new Promise((resolve) => {
+    const req = lib.request(parsed, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
+    }, (res) => {
+      let body = '';
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => {
+        try {
+          const result = JSON.parse(body);
+          if (result.errcode === 0) console.log(`  ✅ 通知已送达`);
+          else console.error(`  ❌ 通知失败: ${result.errmsg}`);
+        } catch (e) {
+          console.error(`  ❌ 响应异常: ${body.substring(0, 200)}`);
+        }
+        resolve();
+      });
+    });
+    req.on('error', (e) => { console.error(`  ❌ 发送失败: ${e.message}`); resolve(); });
+    req.write(payload);
+    req.end();
+  });
+}
+
+// ============== 清理 body 字段 ==============
+function cleanBodies(sites) {
+  for (const entry of sites) {
+    if (entry.checks.http) delete entry.checks.http.body;
+  }
 }
 
 // ============== Main ==============
 async function main() {
-  // 读取配置
+  // 解析命令行参数
+  const mode = process.argv.includes('--basic') ? 'basic'
+    : process.argv.includes('--browser') ? 'browser'
+    : 'all';
+  const siteFilter = process.argv.find(a => a.startsWith('--site='))?.split('=')[1] || null;
+
   let config;
   try {
     config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
@@ -258,7 +481,17 @@ async function main() {
     process.exit(1);
   }
 
-  const { sites, global: g } = config;
+  const { sites: allSites, global: g } = config;
+  const sites = siteFilter
+    ? allSites.filter(s => s.url === siteFilter || s.name === siteFilter)
+    : allSites;
+  if (sites.length === 0) {
+    console.log(`⚠️ 未找到站点: ${siteFilter}`);
+    process.exit(0);
+  }
+  if (siteFilter) {
+    console.log(`🎯 单站点检测: ${sites[0].name} (${sites[0].url})`);
+  }
   if (!sites || sites.length === 0) {
     console.log('⚠️ 配置中无站点');
     process.exit(0);
@@ -267,117 +500,249 @@ async function main() {
   const timeout = g.timeoutMs || 8000;
   const concurrency = g.concurrency || 3;
   const resolvers = g.dnsResolvers || ['8.8.8.8', '1.1.1.1'];
-  const output = { updatedAt: now(), updatedAtCN: nowCN(), sites: [] };
 
-  console.log(`\n🏥 站点健康巡检 — ${nowCN()}\n`);
+  // 读取已有数据（用于合并）
+  const existingData = readExistingData();
 
-  for (let i = 0; i < sites.length; i += concurrency) {
-    const batch = sites.slice(i, i + concurrency);
-    const batchResults = await Promise.all(batch.map(async (site) => {
-      process.stdout.write(`  🔍 ${site.name}... `);
-      const url = new URL(site.url);
-      const hostname = url.hostname;
-      const entry = {
-        name: site.name, url: site.url, hostname,
-        checks: {}, overall: 'ok', overallFailCount: 0,
-      };
+  const output = {
+    updatedAt: now(),
+    updatedAtCN: nowCN(),
+    phase1At: mode === 'basic' || mode === 'all' ? now() : (existingData?.phase1At || null),
+    phase2At: mode === 'browser' || mode === 'all' ? now() : (existingData?.phase2At || null),
+    sites: [],
+  };
 
-      // --- 并发执行各项检查 ---
-      const promises = [];
+  const phaseLabel = mode === 'basic' ? 'Phase 1: 基础检查' : mode === 'browser' ? 'Phase 2: 浏览器检测' : '全部检测';
+  console.log(`\n🏞 站点健康巡检 — ${nowCN()}`);
+  console.log(`📋 模式: ${phaseLabel}\n`);
 
-      // 1. HTTP 可达性
-      promises.push(
-        checkHttpReachability(site.url, site.expectStatus || 200, timeout)
-          .then(r => { entry.checks.http = r; return r; })
-      );
+  // ============================================================
+  // Phase 1: 基础检查 (HTTP / SSL / DNS / 端口 / 安全响应头)
+  // ============================================================
+  if (mode === 'basic' || mode === 'all') {
+    console.log('📡 Phase 1: 基础连通性 + 安全响应头检查\n');
 
-      // 2. SSL（仅 HTTPS）
-      if (site.checkSsl !== false && url.protocol === 'https:') {
+    for (let i = 0; i < sites.length; i += concurrency) {
+      const batch = sites.slice(i, i + concurrency);
+      const batchResults = await Promise.all(batch.map(async (site) => {
+        process.stdout.write(`  🔳 ${site.name}... `);
+        const url = new URL(site.url);
+        const hostname = url.hostname;
+        const entry = {
+          name: site.name, url: site.url, hostname,
+          owner: site.owner || null,
+          dingtalkMobiles: site.dingtalkMobiles || [],
+          checks: {}, overall: 'ok', overallFailCount: 0,
+        };
+
+        const promises = [];
+
         promises.push(
-          checkSsl(hostname, url.port || 443, timeout)
-            .then(r => { entry.checks.ssl = r; return r; })
+          checkHttpReachability(site.url, site.expectStatus || 200, timeout)
+            .then(r => { entry.checks.http = r; return r; })
         );
-      }
 
-      // 3. DNS
-      if (site.checkDns !== false) {
-        promises.push(
-          checkDns(hostname, resolvers)
-            .then(r => { entry.checks.dns = r; return r; })
-        );
-      }
-
-      // 端口
-      if (site.checkPorts && site.checkPorts.length > 0) {
-        promises.push(
-          checkPorts(hostname, site.checkPorts, timeout)
-            .then(r => { entry.checks.ports = r; return r; })
-        );
-      }
-
-      await Promise.allSettled(promises);
-
-      // 5. PageSpeed Insights 评分（独立于其他检查，不阻塞）
-      const psiKey = g.pagespeedApiKey || process.env.PAGESPEED_API_KEY || null;
-      if (site.checkPagespeed !== false && psiKey) {
-        entry.checks.pagespeed_mobile = await checkPagespeedInsights(site.url, 'mobile', psiKey);
-        entry.checks.pagespeed_desktop = await checkPagespeedInsights(site.url, 'desktop', psiKey);
-      }
-
-      // 占位检查
-      if (site.checkCdn !== false) {
-        entry.checks.cdn = checkPlaceholder('CDN 回源检查');
-      }
-      if (site.checkMobileAdapt !== false) {
-        entry.checks.mobileAdapt = checkPlaceholder('移动端适配检查');
-      }
-      if (site.checkSecurity !== false) {
-        entry.checks.security = checkPlaceholder('安全漏洞扫描');
-      }
-
-      // --- 聚合整体状态 ---
-      let failCount = 0;
-      for (const [key, val] of Object.entries(entry.checks)) {
-        if (!val || val.status === 'skip') continue;
-        if (val.status === 'fail') failCount++;
-        if (Array.isArray(val)) {
-          const arrFails = val.filter(v => v.status === 'fail').length;
-          if (arrFails > 0) failCount++;
+        if (site.checkSsl !== false && url.protocol === 'https:') {
+          promises.push(
+            checkSsl(hostname, url.port || 443, timeout)
+              .then(r => { entry.checks.ssl = r; return r; })
+          );
         }
-      }
-      entry.overallFailCount = failCount;
-      if (failCount > 0) entry.overall = 'fail';
-      else {
-        let hasWarn = false;
-        for (const [key, val] of Object.entries(entry.checks)) {
-          if (!val || val.status === 'skip' || val.status === 'ok') continue;
-          if (val.status === 'warn') { hasWarn = true; break; }
-          if (Array.isArray(val)) {
-            if (val.some(v => v.status === 'warn')) { hasWarn = true; break; }
-          }
+
+        if (site.checkDns !== false) {
+          promises.push(
+            checkDns(hostname, resolvers)
+              .then(r => { entry.checks.dns = r; return r; })
+          );
         }
-        entry.overall = hasWarn ? 'warn' : 'ok';
+
+        if (site.checkPorts && site.checkPorts.length > 0) {
+          promises.push(
+            checkPorts(hostname, site.checkPorts, timeout)
+              .then(r => { entry.checks.ports = r; return r; })
+          );
+        }
+
+        await Promise.allSettled(promises);
+
+        // 安全响应头
+        if (site.checkSecurity !== false) {
+          entry.checks.security = await checkSecurityHeaders(site.url, timeout);
+        }
+
+        process.stdout.write(`✅ (基础检查完成)\n`);
+        return entry;
+      }));
+      output.sites.push(...batchResults);
+    }
+
+    // 如果 mode === 'basic'，合并上一次 Phase 2 的结果
+    if (mode === 'basic' && existingData && existingData.sites) {
+      for (const entry of output.sites) {
+        const existing = existingData.sites.find(s => s.url === entry.url);
+        mergeExistingChecks(entry, existing, [
+          'pagespeed_mobile', 'pagespeed_desktop', 'cdn', 'mobileAdapt'
+        ]);
       }
-
-      // 清理 body（不写入 JSON）
-      if (entry.checks.http) delete entry.checks.http.body;
-
-      process.stdout.write(`${entry.overall === 'ok' ? '✅' : entry.overall === 'warn' ? '⚠️' : '❌'} (${failCount} 项异常)\n`);
-      return entry;
-    }));
-
-    output.sites.push(...batchResults);
+    }
   }
 
+  // ============================================================
+  // Phase 2: 浏览器检测 (Lighthouse / CDN / 移动端适配)
+  // ============================================================
+  if (mode === 'browser' || mode === 'all') {
+    const browserSites = sites.filter(s =>
+      s.checkPagespeed !== false || s.checkCdn !== false || s.checkMobileAdapt !== false
+    );
+
+    if (browserSites.length > 0) {
+      console.log('\n🔬 Phase 2: 浏览器检测 (Lighthouse / CDN / 移动端适配)\n');
+
+      let chrome = null;
+      let pupBrowser = null;
+      try {
+        const chromeFlags = ['--headless', '--disable-gpu'];
+        if (process.platform === 'linux') {
+          chromeFlags.push('--no-sandbox', '--disable-dev-shm-usage');
+        }
+
+        chrome = await chromeLauncher.launch({ chromeFlags });
+        console.log(`  🟢 Chrome 已启动 (端口 ${chrome.port})\n`);
+
+        pupBrowser = await puppeteer.connect({
+          browserURL: `http://127.0.0.1:${chrome.port}`,
+          defaultViewport: null,
+        });
+
+        // 如果 mode === 'browser'，从已有数据恢复 Phase 1 结果
+        if (mode === 'browser' && existingData && existingData.sites) {
+          for (const site of sites) {
+            const existing = existingData.sites.find(s => s.url === site.url);
+            const entry = {
+              name: site.name, url: site.url, hostname: new URL(site.url).hostname,
+              owner: site.owner || null,
+              dingtalkMobiles: site.dingtalkMobiles || [],
+              checks: {}, overall: 'ok', overallFailCount: 0,
+            };
+            // 复制 Phase 1 结果
+            if (existing) {
+              for (const key of ['http', 'ssl', 'dns', 'ports', 'security']) {
+                if (existing.checks[key]) {
+                  entry.checks[key] = { ...existing.checks[key], _fromPrevious: false };
+                }
+              }
+            }
+            output.sites.push(entry);
+          }
+        }
+
+        for (const entry of output.sites) {
+          const site = sites.find(s => s.url === entry.url);
+          console.log(`\n  📋 ${entry.name}`);
+
+          // --- Lighthouse ---
+          if (!site || site.checkPagespeed === false) {
+            entry.checks.pagespeed_mobile = { status: 'skip', note: '未启用' };
+            entry.checks.pagespeed_desktop = { status: 'skip', note: '未启用' };
+          } else {
+            process.stdout.write(`    📱 手机端性能... `);
+            entry.checks.pagespeed_mobile = await checkPagespeedWithLighthouse(entry.url, 'mobile', chrome);
+            console.log(entry.checks.pagespeed_mobile.status === 'ok'
+              ? `✅ ${entry.checks.pagespeed_mobile.score}分`
+              : `❌ ${entry.checks.pagespeed_mobile.score || '?'}分`);
+
+            process.stdout.write(`    💻 电脑端性能... `);
+            entry.checks.pagespeed_desktop = await checkPagespeedWithLighthouse(entry.url, 'desktop', chrome);
+            console.log(entry.checks.pagespeed_desktop.status === 'ok'
+              ? `✅ ${entry.checks.pagespeed_desktop.score}分`
+              : `❌ ${entry.checks.pagespeed_desktop.score || '?'}分`);
+          }
+
+          // --- CDN ---
+          if (site && site.checkCdn !== false) {
+            process.stdout.write(`    📦 CDN 回源... `);
+            entry.checks.cdn = await checkCdnBackToSource(entry.url, pupBrowser);
+            console.log(entry.checks.cdn.status === 'ok' ? '✅ 正常' : `❌ ${entry.checks.cdn.error || '异常'}`);
+          } else {
+            entry.checks.cdn = { status: 'skip', note: '未启用' };
+          }
+
+          // --- 移动端适配 ---
+          if (site && site.checkMobileAdapt !== false) {
+            process.stdout.write(`    📲 移动端适配... `);
+            entry.checks.mobileAdapt = await checkMobileAdapt(entry.url, pupBrowser);
+            console.log(entry.checks.mobileAdapt.status === 'ok'
+              ? '✅ 正常'
+              : `❌ ${entry.checks.mobileAdapt.issues?.length || 0} 个问题`);
+          } else {
+            entry.checks.mobileAdapt = { status: 'skip', note: '未启用' };
+          }
+
+          // 计算整体状态 + 即时通知
+          calcOverall(entry);
+          if (entry.overall === 'fail' || entry.overall === 'warn') {
+            await sendDingtalkPerSite(entry, g.dingtalk);
+          }
+        }
+      } catch (e) {
+        console.error(`\n  ❌ 浏览器启动失败: ${e.message}`);
+        for (const entry of output.sites) {
+          for (const key of ['pagespeed_mobile', 'pagespeed_desktop', 'cdn', 'mobileAdapt']) {
+            if (!entry.checks[key]) {
+              entry.checks[key] = { status: 'skip', note: `浏览器启动失败: ${e.message}` };
+            }
+          }
+          calcOverall(entry);
+          if (entry.overall === 'fail' || entry.overall === 'warn') {
+            await sendDingtalkPerSite(entry, g.dingtalk);
+          }
+        }
+      } finally {
+        if (pupBrowser) { await pupBrowser.disconnect(); console.log('  🔌 Puppeteer 已断开'); }
+        if (chrome) { await chrome.kill(); console.log('  🔴 Chrome 已关闭'); }
+      }
+    }
+  }
+
+  // ============================================================
   // 写入 data.json
+  // ============================================================
+  cleanBodies(output.sites);
+
+  // 如果 mode === 'all'，entries 可能重复（Phase 1 和 Phase 2 各创建了一次）
+  // 去重：按 url 合并
+  if (mode === 'all') {
+    const merged = new Map();
+    for (const entry of output.sites) {
+      if (merged.has(entry.url)) {
+        Object.assign(merged.get(entry.url).checks, entry.checks);
+      } else {
+        merged.set(entry.url, entry);
+      }
+    }
+    output.sites = [...merged.values()];
+  }
+
+  // 重新计算一遍确保准确
+  for (const entry of output.sites) {
+    calcOverall(entry);
+  }
+
   fs.mkdirSync(path.dirname(DATA_PATH), { recursive: true });
   fs.writeFileSync(DATA_PATH, JSON.stringify(output, null, 2), 'utf8');
 
+  const okSites = output.sites.filter(s => s.overall === 'ok');
+  const warnSites = output.sites.filter(s => s.overall === 'warn');
+  const failSites = output.sites.filter(s => s.overall === 'fail');
+
   console.log(`\n📊 报告已写入: ${DATA_PATH}`);
   console.log(`   共 ${output.sites.length} 站点`);
-  console.log(`   ✅ ${output.sites.filter(s => s.overall === 'ok').length} 正常`);
-  console.log(`   ⚠️ ${output.sites.filter(s => s.overall === 'warn').length} 警告`);
-  console.log(`   ❌ ${output.sites.filter(s => s.overall === 'fail').length} 异常\n`);
+  console.log(`   ✅ ${okSites.length} 正常`);
+  console.log(`   ⚠️ ${warnSites.length} 警告`);
+  console.log(`   ❌ ${failSites.length} 异常`);
+  if (output.phase1At) console.log(`   Phase 1: ${output.phase1At}`);
+  if (output.phase2At) console.log(`   Phase 2: ${output.phase2At}`);
+  console.log();
 
   return output;
 }
@@ -386,4 +751,4 @@ if (require.main === module) {
   main().catch(e => { console.error('巡检失败:', e.message); process.exit(1); });
 }
 
-module.exports = { main, checkHttpReachability, checkSsl, checkDns, checkPorts, checkPagespeedInsights };
+module.exports = { main, checkHttpReachability, checkSsl, checkDns, checkPorts, checkPagespeedWithLighthouse, checkCdnBackToSource, checkMobileAdapt, checkSecurityHeaders };
