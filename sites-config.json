@@ -6,13 +6,17 @@
     "dnsResolvers": ["8.8.8.8", "1.1.1.1"],
     "responseTimeWarnMs": 3000,
     "responseTimeCritMs": 8000,
-    "pagespeedApiKey": null
+    "dingtalk": {
+      "webhook": "https://oapi.dingtalk.com/robot/send?access_token=a6955913be3197e258bc32a7bbcc8851bdabac8760374d746af71d21e1e13ab0",
+      "signKey": "SEC01521efd8152fa9ceebb3893b8ba131a483aedc97f7f7bda00ce039518430b34"
+    }
   },
   "sites": [
     {
       "name": "品牌站",
       "url": "https://www.holdwell.net/",
       "owner": "@王雨航(koku)",
+      "dingtalkMobiles": ["15962976787"],
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,
@@ -22,7 +26,8 @@
     {
       "name": "中文集团站",
       "url": "https://www.holdwellgroup.com/",
-      "owner": "@王雨航(koku)",
+      "owner": "@陈俊 @王雨航(koku)",
+      "dingtalkMobiles": ["15067893750", "15962976787"],
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,
@@ -33,6 +38,7 @@
       "name": "品牌在线成交站",
       "url": "https://www.holdwellparts.com/",
       "owner": "@王雨航(koku)",
+      "dingtalkMobiles": ["15962976787"],
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,
@@ -42,7 +48,8 @@
     {
       "name": "非品牌在线成交站",
       "url": "https://www.eheparts.com/",
-      "owner": "@黄开发(黄开发Oliver Huang)",
+      "owner": "@黄开发(Oliver Huang)",
+      "dingtalkMobiles": ["18616749320"],
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,
@@ -53,6 +60,7 @@
       "name": "单一类目在线成交站",
       "url": "https://www.stopsolenoid.com/",
       "owner": "@郭娟(JaneGuo)",
+      "dingtalkMobiles": ["18667142620"],
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,
@@ -62,7 +70,8 @@
     {
       "name": "高空车整机站",
       "url": "https://www.hwlifts.com/",
-      "owner": "@魏卓青(魏卓青 Zoya Wei)",
+      "owner": "@魏卓青(Zoya Wei)",
+      "dingtalkMobiles": ["17857578339"],
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,
@@ -73,6 +82,7 @@
       "name": "资讯站",
       "url": "https://freepartsbook.com/",
       "owner": "@郝建凯",
+      "dingtalkMobiles": ["18638569220"],
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,
@@ -83,6 +93,7 @@
       "name": "美国项目站",
       "url": "https://www.partwerks.com/",
       "owner": "@杨续立",
+      "dingtalkMobiles": ["15236186966"],
       "expectStatus": 200,
       "checkPorts": [80, 443],
       "checkDns": true,

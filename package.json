@@ -7,6 +7,13 @@
     "check": "node scripts/site-health-check.js",
     "cron": "node scripts/cron-health-check.js"
   },
+  "dependencies": {
+    "chrome-launcher": "^1.1.2",
+    "docx": "^9.7.1",
+    "lighthouse": "^12.6.0",
+    "puppeteer-core": "^25.3.0",
+    "xlsx": "^0.18.5"
+  },
   "keywords": [
     "health-check",
     "site-monitoring",
