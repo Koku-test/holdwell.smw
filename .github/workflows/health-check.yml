@@ -37,7 +37,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 安装 Chromium（供 Lighthouse / Puppeteer 使用）
         run: |
@@ -72,6 +72,7 @@ jobs:
           fi
         env:
           CHROME_PATH: /usr/bin/chromium-browser
+          PSI_API_KEY: ${{ secrets.PSI_API_KEY }}
 
       - name: 提交更新数据
         run: |

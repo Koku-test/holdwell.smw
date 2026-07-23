@@ -17,7 +17,7 @@
  *   ✅ 2. SSL 证书过期 (≤7 天告警) — 96h
  *   ✅ 3. DNS 配置异常 — 96h
  *   ✅ 4. CDN 回源失败 (Puppeteer 网络拦截) — 7天
- *   ✅ 5. 页面加载超慢 (Lighthouse 本地) — 7天
+ *   ✅ 5. 页面加载超慢 (PageSpeed Insights API) — 7天
  *   ✅ 6. 移动端适配 (Puppeteer 400x738) — 7天
  *   ✅ 7. 安全响应头 (HSTS/CSP 等) — 96h
  *   ✅ 钉钉通知 — 异常时 @ 对应负责人
@@ -30,7 +30,6 @@ const https = require('https');
 const net = require('net');
 const dns = require('dns');
 const crypto = require('crypto');
-const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
 const puppeteer = require('puppeteer-core');
 
@@ -38,6 +37,14 @@ const puppeteer = require('puppeteer-core');
 const ROOT = path.resolve(__dirname, '..');
 const CONFIG_PATH = path.join(ROOT, 'sites-config.json');
 const DATA_PATH = path.join(ROOT, 'dashboard', 'data.json');
+
+// 修复 Windows 上临时文件权限问题
+fs.mkdirSync(path.join(ROOT, '.tmp'), { recursive: true });
+process.env.TMP = path.join(ROOT, '.tmp');
+process.env.TEMP = path.join(ROOT, '.tmp');
+
+// PageSpeed Insights API Key（从环境变量 PSI_API_KEY 读取，不配置则跳过 PSI 检测）
+const PSI_API_KEY = process.env.PSI_API_KEY || null;
 
 // ============== Utils ==============
 function now() { return new Date().toISOString(); }
@@ -212,40 +219,64 @@ async function checkSecurityHeaders(url, timeoutMs) {
 
 // ============== Phase 2 Checks (浏览器) ==============
 
-async function checkPagespeedWithLighthouse(url, strategy, chrome) {
-  const result = { status: 'ok', strategy, score: null, fcp: null, lcp: null, tbt: null, cls: null, error: null };
+async function checkPagespeedWithApi(url, strategy) {
+  const result = { status: 'ok', strategy, score: null, fcp: null, lcp: null, tbt: null, cls: null, cruxData: null, error: null };
+
+  if (!PSI_API_KEY) {
+    result.status = 'skip';
+    result.note = 'PSI_API_KEY 未配置';
+    return result;
+  }
+
   try {
-    const options = {
-      logLevel: 'error', output: 'json', onlyCategories: ['performance'], port: chrome.port,
-    };
-    if (strategy === 'mobile') {
-      options.formFactor = 'mobile';
-      options.screenEmulation = { mobile: true, width: 412, height: 823, deviceScaleFactor: 1.75, disabled: false };
-    } else {
-      options.formFactor = 'desktop';
-      options.screenEmulation = { mobile: false, width: 1350, height: 940, deviceScaleFactor: 1, disabled: false };
-    }
+    const apiUrl = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed' +
+      `?url=${encodeURIComponent(url)}&strategy=${strategy}&key=${PSI_API_KEY}`;
+
     const start = Date.now();
-    const runnerResult = await lighthouse(url, options);
+    const res = await httpGet(apiUrl, 60000);
     const elapsed = Date.now() - start;
-    const lhr = runnerResult.lhr;
-    if (!lhr || !lhr.categories || !lhr.categories.performance) {
+
+    const data = JSON.parse(res.body);
+
+    if (data.error) {
       result.status = 'fail';
-      result.error = 'Lighthouse 响应结构异常';
+      result.error = `API 错误: ${data.error.message}`;
       return result;
     }
+
+    const lhr = data.lighthouseResult;
+    if (!lhr || !lhr.categories || !lhr.categories.performance) {
+      result.status = 'fail';
+      result.error = 'PSI API 响应结构异常';
+      return result;
+    }
+
     result.score = Math.round(lhr.categories.performance.score * 100);
     result.elapsedMs = elapsed;
+
     const audits = lhr.audits || {};
     if (audits['first-contentful-paint']) result.fcp = audits['first-contentful-paint'].displayValue;
     if (audits['largest-contentful-paint']) result.lcp = audits['largest-contentful-paint'].displayValue;
     if (audits['total-blocking-time']) result.tbt = audits['total-blocking-time'].displayValue;
     if (audits['cumulative-layout-shift']) result.cls = audits['cumulative-layout-shift'].displayValue;
+
+    // CrUX 真实用户数据（Chrome User Experience Report）
+    if (data.loadingExperience && data.loadingExperience.metrics) {
+      const crux = data.loadingExperience;
+      result.cruxData = {
+        overall: crux.overall_category || null,
+        fcpMs: crux.metrics.FIRST_CONTENTFUL_PAINT_MS?.percentile,
+        lcpMs: crux.metrics.LARGEST_CONTENTFUL_PAINT_MS?.percentile,
+        cls: crux.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE?.percentile,
+      };
+    }
+
     const threshold = strategy === 'mobile' ? 70 : 90;
     if (result.score < threshold) {
       result.status = 'fail';
       result.error = `${strategy === 'mobile' ? '手机' : '电脑'}端评分 ${result.score}，低于阈值 ${threshold}`;
     }
+
     return result;
   } catch (e) {
     result.status = 'fail';
@@ -342,28 +373,38 @@ function checkLabel(key) {
 
 // ============== 整体状态计算 ==============
 function calcOverall(entry) {
-  let failCount = 0;
+  const p1Keys = ['http', 'ssl', 'dns', 'ports'];
+  const p2Keys = ['pagespeed_mobile', 'pagespeed_desktop', 'cdn', 'mobileAdapt', 'security'];
+
+  let p1Fail = 0, p1Warn = 0, p2Fail = 0, p2Warn = 0;
+
   for (const [key, val] of Object.entries(entry.checks)) {
     if (!val || val.status === 'skip') continue;
-    if (val.status === 'fail') failCount++;
     if (Array.isArray(val)) {
       const arrFails = val.filter(v => v.status === 'fail').length;
-      if (arrFails > 0) failCount++;
+      if (arrFails > 0) {
+        if (p1Keys.includes(key)) p1Fail++;
+        else if (p2Keys.includes(key)) p2Fail++;
+      }
+      continue;
+    }
+    if (val.status === 'fail') {
+      if (p1Keys.includes(key)) p1Fail++;
+      else if (p2Keys.includes(key)) p2Fail++;
+    } else if (val.status === 'warn') {
+      if (p1Keys.includes(key)) p1Warn++;
+      else if (p2Keys.includes(key)) p2Warn++;
     }
   }
-  entry.overallFailCount = failCount;
-  if (failCount > 0) {
+
+  entry.overallFailCount = p1Fail + p2Fail;
+
+  if (p1Fail > 0) {
     entry.overall = 'fail';
+  } else if (p1Warn > 0 || p2Fail > 0 || p2Warn > 0) {
+    entry.overall = 'warn';
   } else {
-    let hasWarn = false;
-    for (const [key, val] of Object.entries(entry.checks)) {
-      if (!val || val.status === 'skip' || val.status === 'ok') continue;
-      if (val.status === 'warn') { hasWarn = true; break; }
-      if (Array.isArray(val)) {
-        if (val.some(v => v.status === 'warn')) { hasWarn = true; break; }
-      }
-    }
-    entry.overall = hasWarn ? 'warn' : 'ok';
+    entry.overall = 'ok';
   }
 }
 
@@ -393,19 +434,28 @@ async function sendDingtalkPerSite(entry, dingtalkConfig) {
   if (!webhook || webhook.includes('YOUR_TOKEN')) return;
 
   const mobiles = entry.dingtalkMobiles || [];
+  // 仅收集 Phase 1 异常项（HTTP/SSL/DNS/端口/响应）
+  // Phase 2（CDN/测速/移动端/安全）只看板预警，不做钉钉推送
+  const p1Keys = ['http', 'ssl', 'dns', 'ports'];
   const issues = [];
+  let hasP1Issue = false;
   for (const [key, check] of Object.entries(entry.checks || {})) {
+    if (!p1Keys.includes(key)) continue;
     if (!check || check.status === 'skip' || check.status === 'ok') continue;
     if (Array.isArray(check)) {
       for (const p of check) {
-        if (p.status === 'fail') issues.push(`端口${p.port}${p.error || '不通'}`);
+        if (p.status === 'fail') { issues.push(`端口${p.port}${p.error || '不通'}`); hasP1Issue = true; }
       }
     } else if (check.status === 'fail') {
       issues.push(checkLabel(key) + (check.error ? check.error : '异常'));
+      hasP1Issue = true;
     } else if (check.status === 'warn') {
       issues.push(checkLabel(key) + '需关注');
+      hasP1Issue = true;
     }
   }
+
+  if (!hasP1Issue) return;
 
   const isFail = entry.overall === 'fail';
   const icon = isFail ? '❌' : '⚠️';
@@ -585,10 +635,18 @@ async function main() {
         ]);
       }
     }
+
+    // Phase 1 完成后计算状态 + 钉钉通知（仅 P1 异常项推送）
+    for (const entry of output.sites) {
+      calcOverall(entry);
+      if (entry.overall === 'fail' || entry.overall === 'warn') {
+        await sendDingtalkPerSite(entry, g.dingtalk);
+      }
+    }
   }
 
   // ============================================================
-  // Phase 2: 浏览器检测 (Lighthouse / CDN / 移动端适配)
+  // Phase 2: 浏览器检测 (PageSpeed API / CDN / 移动端适配)
   // ============================================================
   if (mode === 'browser' || mode === 'all') {
     const browserSites = sites.filter(s =>
@@ -596,8 +654,58 @@ async function main() {
     );
 
     if (browserSites.length > 0) {
-      console.log('\n🔬 Phase 2: 浏览器检测 (Lighthouse / CDN / 移动端适配)\n');
+      console.log('\n🔬 Phase 2: PageSpeed API + CDN + 移动端适配\n');
 
+      // 如果 mode === 'browser'，从已有数据恢复 Phase 1 结果
+      if (mode === 'browser' && existingData && existingData.sites) {
+        for (const site of sites) {
+          const existing = existingData.sites.find(s => s.url === site.url);
+          const entry = {
+            name: site.name, url: site.url, hostname: new URL(site.url).hostname,
+            owner: site.owner || null,
+            dingtalkMobiles: site.dingtalkMobiles || [],
+            checks: {}, overall: 'ok', overallFailCount: 0,
+          };
+          if (existing) {
+            for (const key of ['http', 'ssl', 'dns', 'ports', 'security']) {
+              if (existing.checks[key]) {
+                entry.checks[key] = Array.isArray(existing.checks[key])
+                  ? [...existing.checks[key]]
+                  : { ...existing.checks[key], _fromPrevious: false };
+              }
+            }
+          }
+          output.sites.push(entry);
+        }
+      }
+
+      // --- Step 1: PageSpeed Insights API（无需浏览器）---
+      console.log('  📡 PageSpeed Insights API 检测...\n');
+      for (const entry of output.sites) {
+        const site = sites.find(s => s.url === entry.url);
+        console.log(`  📋 ${entry.name}`);
+
+        if (!site || site.checkPagespeed === false) {
+          entry.checks.pagespeed_mobile = { status: 'skip', note: '未启用' };
+          entry.checks.pagespeed_desktop = { status: 'skip', note: '未启用' };
+        } else {
+          process.stdout.write(`    📱 手机端性能... `);
+          entry.checks.pagespeed_mobile = await checkPagespeedWithApi(entry.url, 'mobile');
+          const m = entry.checks.pagespeed_mobile;
+          console.log(m.status === 'ok' ? `✅ ${m.score}分`
+            : m.status === 'skip' ? '⏭️ 跳过'
+            : `❌ ${m.score || '?'}分`);
+
+          process.stdout.write(`    💻 电脑端性能... `);
+          entry.checks.pagespeed_desktop = await checkPagespeedWithApi(entry.url, 'desktop');
+          const d = entry.checks.pagespeed_desktop;
+          console.log(d.status === 'ok' ? `✅ ${d.score}分`
+            : d.status === 'skip' ? '⏭️ 跳过'
+            : `❌ ${d.score || '?'}分`);
+        }
+      }
+
+      // --- Step 2: CDN 回源 + 移动端适配（需要浏览器）---
       let chrome = null;
       let pupBrowser = null;
       try {
@@ -607,58 +715,17 @@ async function main() {
         }
 
         chrome = await chromeLauncher.launch({ chromeFlags });
-        console.log(`  🟢 Chrome 已启动 (端口 ${chrome.port})\n`);
+        console.log(`\n  🟢 Chrome 已启动 (端口 ${chrome.port})\n`);
 
         pupBrowser = await puppeteer.connect({
           browserURL: `http://127.0.0.1:${chrome.port}`,
           defaultViewport: null,
         });
 
-        // 如果 mode === 'browser'，从已有数据恢复 Phase 1 结果
-        if (mode === 'browser' && existingData && existingData.sites) {
-          for (const site of sites) {
-            const existing = existingData.sites.find(s => s.url === site.url);
-            const entry = {
-              name: site.name, url: site.url, hostname: new URL(site.url).hostname,
-              owner: site.owner || null,
-              dingtalkMobiles: site.dingtalkMobiles || [],
-              checks: {}, overall: 'ok', overallFailCount: 0,
-            };
-            // 复制 Phase 1 结果
-            if (existing) {
-              for (const key of ['http', 'ssl', 'dns', 'ports', 'security']) {
-                if (existing.checks[key]) {
-                  entry.checks[key] = { ...existing.checks[key], _fromPrevious: false };
-                }
-              }
-            }
-            output.sites.push(entry);
-          }
-        }
-
         for (const entry of output.sites) {
           const site = sites.find(s => s.url === entry.url);
-          console.log(`\n  📋 ${entry.name}`);
+          console.log(`  📋 ${entry.name}`);
 
-          // --- Lighthouse ---
-          if (!site || site.checkPagespeed === false) {
-            entry.checks.pagespeed_mobile = { status: 'skip', note: '未启用' };
-            entry.checks.pagespeed_desktop = { status: 'skip', note: '未启用' };
-          } else {
-            process.stdout.write(`    📱 手机端性能... `);
-            entry.checks.pagespeed_mobile = await checkPagespeedWithLighthouse(entry.url, 'mobile', chrome);
-            console.log(entry.checks.pagespeed_mobile.status === 'ok'
-              ? `✅ ${entry.checks.pagespeed_mobile.score}分`
-              : `❌ ${entry.checks.pagespeed_mobile.score || '?'}分`);
-
-            process.stdout.write(`    💻 电脑端性能... `);
-            entry.checks.pagespeed_desktop = await checkPagespeedWithLighthouse(entry.url, 'desktop', chrome);
-            console.log(entry.checks.pagespeed_desktop.status === 'ok'
-              ? `✅ ${entry.checks.pagespeed_desktop.score}分`
-              : `❌ ${entry.checks.pagespeed_desktop.score || '?'}分`);
-          }
-
-          // --- CDN ---
           if (site && site.checkCdn !== false) {
             process.stdout.write(`    📦 CDN 回源... `);
             entry.checks.cdn = await checkCdnBackToSource(entry.url, pupBrowser);
@@ -667,7 +734,6 @@ async function main() {
             entry.checks.cdn = { status: 'skip', note: '未启用' };
           }
 
-          // --- 移动端适配 ---
           if (site && site.checkMobileAdapt !== false) {
             process.stdout.write(`    📲 移动端适配... `);
             entry.checks.mobileAdapt = await checkMobileAdapt(entry.url, pupBrowser);
@@ -677,29 +743,30 @@ async function main() {
           } else {
             entry.checks.mobileAdapt = { status: 'skip', note: '未启用' };
           }
-
-          // 计算整体状态 + 即时通知
-          calcOverall(entry);
-          if (entry.overall === 'fail' || entry.overall === 'warn') {
-            await sendDingtalkPerSite(entry, g.dingtalk);
-          }
         }
       } catch (e) {
         console.error(`\n  ❌ 浏览器启动失败: ${e.message}`);
         for (const entry of output.sites) {
-          for (const key of ['pagespeed_mobile', 'pagespeed_desktop', 'cdn', 'mobileAdapt']) {
+          for (const key of ['cdn', 'mobileAdapt']) {
             if (!entry.checks[key]) {
               entry.checks[key] = { status: 'skip', note: `浏览器启动失败: ${e.message}` };
             }
-          }
-          calcOverall(entry);
-          if (entry.overall === 'fail' || entry.overall === 'warn') {
-            await sendDingtalkPerSite(entry, g.dingtalk);
           }
         }
       } finally {
         if (pupBrowser) { await pupBrowser.disconnect(); console.log('  🔌 Puppeteer 已断开'); }
         if (chrome) { await chrome.kill(); console.log('  🔴 Chrome 已关闭'); }
+      }
+
+      // --- Step 3: 计算状态 + 通知 ---
+      // Phase 2 独立运行时不做钉钉推送（数据来自上一轮 P1），仅在 mode=all 时推送
+      for (const entry of output.sites) {
+        calcOverall(entry);
+        if (mode === 'all') {
+          if (entry.overall === 'fail' || entry.overall === 'warn') {
+            await sendDingtalkPerSite(entry, g.dingtalk);
+          }
+        }
       }
     }
   }
@@ -748,7 +815,11 @@ async function main() {
 }
 
 if (require.main === module) {
+  process.on('unhandledRejection', (err) => {
+    if (err && err.code === 'EPERM') return; // 忽略 Windows 临时文件清理权限错误
+    console.error('未捕获异常:', err?.message || err);
+  });
   main().catch(e => { console.error('巡检失败:', e.message); process.exit(1); });
 }
 
-module.exports = { main, checkHttpReachability, checkSsl, checkDns, checkPorts, checkPagespeedWithLighthouse, checkCdnBackToSource, checkMobileAdapt, checkSecurityHeaders };
+module.exports = { main, checkHttpReachability, checkSsl, checkDns, checkPorts, checkPagespeedWithApi, checkCdnBackToSource, checkMobileAdapt, checkSecurityHeaders };
