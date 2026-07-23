@@ -666,11 +666,14 @@ async function main() {
       }
     }
 
-    // Phase 1 完成后计算状态 + 钉钉通知（仅 P1 异常项推送）
+    // Phase 1 完成后计算状态 + 钉钉通知
+    // mode=all 时推迟到 Phase 2 统一通知，避免重复推送
     for (const entry of output.sites) {
       calcOverall(entry);
-      if (entry.overall === 'fail' || entry.overall === 'warn') {
-        await sendDingtalkPerSite(entry, g.dingtalk);
+      if (mode === 'basic') {
+        if (entry.overall === 'fail' || entry.overall === 'warn') {
+          await sendDingtalkPerSite(entry, g.dingtalk);
+        }
       }
     }
   }
@@ -789,11 +792,19 @@ async function main() {
       }
 
       // --- Step 3: 计算状态 + 通知 ---
-      // Phase 2 独立运行时不做钉钉推送（数据来自上一轮 P1），仅在 mode=all 时推送
+      // mode=browser: 不推送（P1 数据来自上一轮，可能已过期）
+      // mode=all: 统一推送（Phase 1 已跳过，在此汇总 P1+P2 结果）
       for (const entry of output.sites) {
         calcOverall(entry);
         if (mode === 'all') {
-          if (entry.overall === 'fail' || entry.overall === 'warn') {
+          // 仅 P1 有实际异常时才推送，避免 P2 单方面问题触发空通知
+          const hasP1Issue = ['http', 'ssl', 'dns', 'ports'].some(key => {
+            const c = entry.checks[key];
+            if (!c) return false;
+            if (Array.isArray(c)) return c.some(p => p.status === 'fail');
+            return c.status === 'fail' || c.status === 'warn';
+          });
+          if (hasP1Issue) {
             await sendDingtalkPerSite(entry, g.dingtalk);
           }
         }
