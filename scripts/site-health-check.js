@@ -220,7 +220,7 @@ async function checkSecurityHeaders(url, timeoutMs) {
 // ============== Phase 2 Checks (浏览器) ==============
 
 async function checkPagespeedWithApi(url, strategy) {
-  const result = { status: 'ok', strategy, score: null, fcp: null, lcp: null, tbt: null, cls: null, cruxData: null, error: null };
+  const result = { status: 'ok', strategy, score: null, fcp: null, lcp: null, tbt: null, cls: null, cruxData: null, error: null, attempts: 0 };
 
   if (!PSI_API_KEY) {
     result.status = 'skip';
@@ -228,61 +228,91 @@ async function checkPagespeedWithApi(url, strategy) {
     return result;
   }
 
-  try {
-    const apiUrl = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed' +
-      `?url=${encodeURIComponent(url)}&strategy=${strategy}&key=${PSI_API_KEY}`;
+  const MAX_ATTEMPTS = 2; // 同一站点+策略最多请求 2 次
+  const RETRY_DELAY_MS = 3000; // 重试间隔 3 秒（避开 1 QPS 限制）
 
-    const start = Date.now();
-    const res = await httpGet(apiUrl, 60000);
-    const elapsed = Date.now() - start;
+  let lastError = null;
 
-    const data = JSON.parse(res.body);
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    result.attempts = attempt;
 
-    if (data.error) {
-      result.status = 'fail';
-      result.error = `API 错误: ${data.error.message}`;
+    try {
+      const apiUrl = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed' +
+        `?url=${encodeURIComponent(url)}&strategy=${strategy}&key=${PSI_API_KEY}`;
+
+      const start = Date.now();
+      const res = await httpGet(apiUrl, 60000);
+      const elapsed = Date.now() - start;
+
+      const data = JSON.parse(res.body);
+
+      // API 级别的错误（如 key 无效、配额超限）不重试
+      if (data.error) {
+        const errMsg = data.error.message || '';
+        // 429 Too Many Requests / 配额相关 → 可重试
+        if (errMsg.includes('quota') || errMsg.includes('rate') || data.error.code === 429) {
+          if (attempt < MAX_ATTEMPTS) {
+            console.log(`    ⚠️ 配额限制，${RETRY_DELAY_MS / 1000}s 后重试 (${attempt}/${MAX_ATTEMPTS})`);
+            await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+            continue;
+          }
+        }
+        result.status = 'fail';
+        result.error = `API 错误: ${errMsg}`;
+        return result;
+      }
+
+      const lhr = data.lighthouseResult;
+      if (!lhr || !lhr.categories || !lhr.categories.performance) {
+        if (attempt < MAX_ATTEMPTS) {
+          console.log(`    ⚠️ 响应异常，${RETRY_DELAY_MS / 1000}s 后重试 (${attempt}/${MAX_ATTEMPTS})`);
+          await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+          continue;
+        }
+        result.status = 'fail';
+        result.error = 'PSI API 响应结构异常';
+        return result;
+      }
+
+      result.score = Math.round(lhr.categories.performance.score * 100);
+      result.elapsedMs = elapsed;
+
+      const audits = lhr.audits || {};
+      if (audits['first-contentful-paint']) result.fcp = audits['first-contentful-paint'].displayValue;
+      if (audits['largest-contentful-paint']) result.lcp = audits['largest-contentful-paint'].displayValue;
+      if (audits['total-blocking-time']) result.tbt = audits['total-blocking-time'].displayValue;
+      if (audits['cumulative-layout-shift']) result.cls = audits['cumulative-layout-shift'].displayValue;
+
+      // CrUX 真实用户数据（Chrome User Experience Report）
+      if (data.loadingExperience && data.loadingExperience.metrics) {
+        const crux = data.loadingExperience;
+        result.cruxData = {
+          overall: crux.overall_category || null,
+          fcpMs: crux.metrics.FIRST_CONTENTFUL_PAINT_MS?.percentile,
+          lcpMs: crux.metrics.LARGEST_CONTENTFUL_PAINT_MS?.percentile,
+          cls: crux.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE?.percentile,
+        };
+      }
+
+      const threshold = strategy === 'mobile' ? 70 : 90;
+      if (result.score < threshold) {
+        result.status = 'fail';
+        result.error = `${strategy === 'mobile' ? '手机' : '电脑'}端评分 ${result.score}，低于阈值 ${threshold}`;
+      }
+
       return result;
+    } catch (e) {
+      lastError = e.message;
+      if (attempt < MAX_ATTEMPTS) {
+        console.log(`    ⚠️ 网络错误，${RETRY_DELAY_MS / 1000}s 后重试 (${attempt}/${MAX_ATTEMPTS})`);
+        await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+      }
     }
-
-    const lhr = data.lighthouseResult;
-    if (!lhr || !lhr.categories || !lhr.categories.performance) {
-      result.status = 'fail';
-      result.error = 'PSI API 响应结构异常';
-      return result;
-    }
-
-    result.score = Math.round(lhr.categories.performance.score * 100);
-    result.elapsedMs = elapsed;
-
-    const audits = lhr.audits || {};
-    if (audits['first-contentful-paint']) result.fcp = audits['first-contentful-paint'].displayValue;
-    if (audits['largest-contentful-paint']) result.lcp = audits['largest-contentful-paint'].displayValue;
-    if (audits['total-blocking-time']) result.tbt = audits['total-blocking-time'].displayValue;
-    if (audits['cumulative-layout-shift']) result.cls = audits['cumulative-layout-shift'].displayValue;
-
-    // CrUX 真实用户数据（Chrome User Experience Report）
-    if (data.loadingExperience && data.loadingExperience.metrics) {
-      const crux = data.loadingExperience;
-      result.cruxData = {
-        overall: crux.overall_category || null,
-        fcpMs: crux.metrics.FIRST_CONTENTFUL_PAINT_MS?.percentile,
-        lcpMs: crux.metrics.LARGEST_CONTENTFUL_PAINT_MS?.percentile,
-        cls: crux.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE?.percentile,
-      };
-    }
-
-    const threshold = strategy === 'mobile' ? 70 : 90;
-    if (result.score < threshold) {
-      result.status = 'fail';
-      result.error = `${strategy === 'mobile' ? '手机' : '电脑'}端评分 ${result.score}，低于阈值 ${threshold}`;
-    }
-
-    return result;
-  } catch (e) {
-    result.status = 'fail';
-    result.error = e.message;
-    return result;
   }
+
+  result.status = 'fail';
+  result.error = lastError || '达到最大重试次数';
+  return result;
 }
 
 async function checkCdnBackToSource(url, browser) {
