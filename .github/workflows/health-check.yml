@@ -39,14 +39,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: 安装 Chromium（供 Lighthouse / Puppeteer 使用）
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser libnss3 libnspr4 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2t64
-
-      - name: 安装依赖
-        run: npm ci
-
+      # 先判断模式，Phase 1 不需要浏览器
       - name: 判断运行模式
         id: mode
         run: |
@@ -62,6 +55,15 @@ jobs:
           else
             echo "mode=basic" >> $GITHUB_OUTPUT
           fi
+
+      - name: 安装 Chromium（仅 Phase 2 需要）
+        if: steps.mode.outputs.mode == 'browser' || steps.mode.outputs.mode == 'all'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser libnss3 libnspr4 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2t64
+
+      - name: 安装依赖
+        run: npm ci
 
       - name: 运行站点健康巡检
         run: |

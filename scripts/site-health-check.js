@@ -712,7 +712,7 @@ async function main() {
         }
       }
 
-      // --- Step 1: PageSpeed Insights API（无需浏览器）---
+      // --- Step 1: PageSpeed Insights API（无需浏览器，并行 mobile+desktop）---
       console.log('  📡 PageSpeed Insights API 检测...\n');
       for (const entry of output.sites) {
         const site = sites.find(s => s.url === entry.url);
@@ -722,19 +722,16 @@ async function main() {
           entry.checks.pagespeed_mobile = { status: 'skip', note: '未启用' };
           entry.checks.pagespeed_desktop = { status: 'skip', note: '未启用' };
         } else {
-          process.stdout.write(`    📱 手机端性能... `);
-          entry.checks.pagespeed_mobile = await checkPagespeedWithApi(entry.url, 'mobile');
-          const m = entry.checks.pagespeed_mobile;
-          console.log(m.status === 'ok' ? `✅ ${m.score}分`
-            : m.status === 'skip' ? '⏭️ 跳过'
-            : `❌ ${m.score || '?'}分`);
-
-          process.stdout.write(`    💻 电脑端性能... `);
-          entry.checks.pagespeed_desktop = await checkPagespeedWithApi(entry.url, 'desktop');
-          const d = entry.checks.pagespeed_desktop;
-          console.log(d.status === 'ok' ? `✅ ${d.score}分`
-            : d.status === 'skip' ? '⏭️ 跳过'
-            : `❌ ${d.score || '?'}分`);
+          process.stdout.write(`    📱+💻 性能测速... `);
+          const [mobile, desktop] = await Promise.all([
+            checkPagespeedWithApi(entry.url, 'mobile'),
+            checkPagespeedWithApi(entry.url, 'desktop'),
+          ]);
+          entry.checks.pagespeed_mobile = mobile;
+          entry.checks.pagespeed_desktop = desktop;
+          const mOk = mobile.status === 'ok' ? `✅ ${mobile.score}分` : mobile.status === 'skip' ? '⏭️' : `❌ ${mobile.score || '?'}分`;
+          const dOk = desktop.status === 'ok' ? `✅ ${desktop.score}分` : desktop.status === 'skip' ? '⏭️' : `❌ ${desktop.score || '?'}分`;
+          console.log(`📱${mOk} 💻${dOk}`);
         }
       }
 
@@ -759,22 +756,33 @@ async function main() {
           const site = sites.find(s => s.url === entry.url);
           console.log(`  📋 ${entry.name}`);
 
+          const tasks = [];
+
           if (site && site.checkCdn !== false) {
-            process.stdout.write(`    📦 CDN 回源... `);
-            entry.checks.cdn = await checkCdnBackToSource(entry.url, pupBrowser);
-            console.log(entry.checks.cdn.status === 'ok' ? '✅ 正常' : `❌ ${entry.checks.cdn.error || '异常'}`);
+            tasks.push(
+              checkCdnBackToSource(entry.url, pupBrowser).then(r => {
+                process.stdout.write(`    📦 CDN: ${r.status === 'ok' ? '✅' : '❌'}`);
+                entry.checks.cdn = r;
+              })
+            );
           } else {
             entry.checks.cdn = { status: 'skip', note: '未启用' };
           }
 
           if (site && site.checkMobileAdapt !== false) {
-            process.stdout.write(`    📲 移动端适配... `);
-            entry.checks.mobileAdapt = await checkMobileAdapt(entry.url, pupBrowser);
-            console.log(entry.checks.mobileAdapt.status === 'ok'
-              ? '✅ 正常'
-              : `❌ ${entry.checks.mobileAdapt.issues?.length || 0} 个问题`);
+            tasks.push(
+              checkMobileAdapt(entry.url, pupBrowser).then(r => {
+                process.stdout.write(`  📲 适配: ${r.status === 'ok' ? '✅' : '❌'}`);
+                entry.checks.mobileAdapt = r;
+              })
+            );
           } else {
             entry.checks.mobileAdapt = { status: 'skip', note: '未启用' };
+          }
+
+          if (tasks.length > 0) {
+            await Promise.all(tasks);
+            console.log();
           }
         }
       } catch (e) {
