@@ -74,6 +74,7 @@
   .site-card.border-ok { border-top-color: #22c55e; }
   .site-card.border-warn { border-top-color: #f59e0b; }
   .site-card.border-fail { border-top-color: #ef4444; }
+  .site-card.phase2-warn { box-shadow: 0 0 0 2px #f59e0b, 0 1px 4px rgba(0,0,0,.07); }
 
   .card-header {
     padding: 16px 18px 12px;
@@ -303,7 +304,11 @@ function render() {
 // ========== Build Site Card ==========
 function buildCard(site) {
   const card = document.createElement('div');
+  const hasPhase2Fail = checkPhase2Fail(site);
   card.className = `site-card border-${site.overall}`;
+  if (hasPhase2Fail && site.overall === 'ok') {
+    card.classList.add('phase2-warn');
+  }
   card.dataset.overall = site.overall;
 
   // --- Header ---
@@ -340,9 +345,9 @@ function buildCard(site) {
   }
 
   addCheckItem(checksDiv, '响应', checkMap.http, formatResponseTime);
+  addCheckItem(checksDiv, '📦 CDN', checkMap.cdn, formatCdn);
   addCheckItem(checksDiv, '📱 测速', checkMap.pagespeed_mobile, formatPagespeed);
   addCheckItem(checksDiv, '💻 测速', checkMap.pagespeed_desktop, formatPagespeed);
-  addCheckItem(checksDiv, '📦 CDN', checkMap.cdn, formatCdn);
   addCheckItem(checksDiv, '📲 移动端', checkMap.mobileAdapt, formatMobileAdapt);
   addCheckItem(checksDiv, '🔒 安全', checkMap.security, formatSecurity);
 
@@ -430,9 +435,9 @@ function formatResponseTime(check) {
 }
 
 function formatPagespeed(check) {
-  if (!check || check.status === 'skip') return '跳过';
-  if (check.status === 'fail') return `得分 ${check.score}`;
-  return `${check.score} 分`;
+  if (!check || check.status === 'skip') return '—';
+  if (check.status === 'fail') return `${check.score} 分`;
+  return '✅';
 }
 
 function formatCdn(check) {
@@ -547,6 +552,15 @@ function fmtMs(ms) {
 // 修改为你的仓库地址
 const GITHUB_WORKFLOW_URL = 'https://github.com/Koku-test/holdwell.smw/actions/workflows/health-check.yml';
 let activeRetryMenu = null;
+
+function checkPhase2Fail(site) {
+  const p2Keys = ['pagespeed_mobile', 'pagespeed_desktop', 'cdn', 'mobileAdapt'];
+  for (const key of p2Keys) {
+    const check = site.checks[key];
+    if (check && (check.status === 'fail' || check.status === 'warn')) return true;
+  }
+  return false;
+}
 
 function showRetryMenu(btn, siteName, siteUrl) {
   // 关闭已打开的菜单

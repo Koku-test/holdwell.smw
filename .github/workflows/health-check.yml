@@ -56,11 +56,12 @@ jobs:
             echo "mode=basic" >> $GITHUB_OUTPUT
           fi
 
-      - name: 安装 Chromium（仅 Phase 2 需要）
+      # 安装 Chrome（仅 Phase 2 需要，自带缓存避免每次下载）
+      - name: 安装 Chrome
         if: steps.mode.outputs.mode == 'browser' || steps.mode.outputs.mode == 'all'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser libnss3 libnspr4 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2t64
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
 
       - name: 安装依赖
         run: npm ci
@@ -73,7 +74,6 @@ jobs:
             node scripts/site-health-check.js --${{ steps.mode.outputs.mode }}
           fi
         env:
-          CHROME_PATH: /usr/bin/chromium-browser
           PSI_API_KEY: ${{ secrets.PSI_API_KEY }}
 
       - name: 提交更新数据
