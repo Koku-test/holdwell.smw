@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-08-01T05:16:59.393Z",
-  "updatedAtCN": "2026/8/1 13:16:59",
+  "updatedAt": "2026-08-02T05:26:08.073Z",
+  "updatedAtCN": "2026/8/2 13:26:08",
   "phase1At": "2026-08-01T05:16:59.803Z",
-  "phase2At": "2026-07-26T05:31:23.975Z",
+  "phase2At": "2026-08-02T05:26:08.084Z",
   "sites": [
     {
       "name": "品牌站",
@@ -13,13 +13,18 @@
         "15962976787"
       ],
       "checks": {
-        "dns": {
+        "http": {
           "status": "ok",
-          "addresses": [
-            "163.181.246.145"
-          ],
+          "statusCode": 200,
+          "elapsedMs": 968,
           "error": null,
-          "via": "system"
+          "details": {
+            "server": "Tengine",
+            "contentType": "text/html; charset=UTF-8",
+            "location": null
+          },
+          "redirect": null,
+          "_fromPrevious": false
         },
         "ssl": {
           "status": "ok",
@@ -29,7 +34,17 @@
           "validFrom": "Jan  7 00:00:00 2026 GMT",
           "validTo": "Feb  7 23:59:59 2027 GMT",
           "error": null,
-          "elapsedMs": 489
+          "elapsedMs": 489,
+          "_fromPrevious": false
+        },
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "163.181.246.145"
+          ],
+          "error": null,
+          "via": "system",
+          "_fromPrevious": false
         },
         "ports": [
           {
@@ -45,18 +60,6 @@
             "error": null
           }
         ],
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 968,
-          "error": null,
-          "details": {
-            "server": "Tengine",
-            "contentType": "text/html; charset=UTF-8",
-            "location": null
-          },
-          "redirect": null
-        },
         "security": {
           "status": "warn",
           "issues": [
@@ -68,54 +71,50 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy"
+          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy",
+          "_fromPrevious": false
         },
         "pagespeed_mobile": {
           "status": "ok",
           "strategy": "mobile",
           "score": 75,
           "fcp": "1.8 s",
-          "lcp": "4.1 s",
-          "tbt": "20 ms",
-          "cls": "0.015",
+          "lcp": "5.1 s",
+          "tbt": "10 ms",
+          "cls": "0.006",
           "cruxData": null,
           "error": null,
           "attempts": 1,
-          "elapsedMs": 37688,
-          "_fromPrevious": true
+          "elapsedMs": 19608
         },
         "pagespeed_desktop": {
-          "status": "fail",
-          "strategy": "desktop",
-          "score": 78,
-          "fcp": "0.4 s",
-          "lcp": "1.1 s",
-          "tbt": "0 ms",
-          "cls": "0.215",
-          "cruxData": null,
-          "error": "电脑端评分 78，低于阈值 90",
-          "attempts": 1,
-          "elapsedMs": 40309,
-          "_fromPrevious": true
-        },
-        "cdn": {
           "status": "ok",
-          "failedResources": [],
+          "strategy": "desktop",
+          "score": 93,
+          "fcp": "0.5 s",
+          "lcp": "1.1 s",
+          "tbt": "10 ms",
+          "cls": "0.01",
+          "cruxData": null,
           "error": null,
-          "_fromPrevious": true
+          "attempts": 1,
+          "elapsedMs": 20357
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
-            "11 处文字过小 (<12px)",
-            "45 个可点击元素过小 (<44px)"
+            "41 个可点击元素过小 (<44px)"
           ],
-          "error": "11 处文字过小 (<12px); 45 个可点击元素过小 (<44px)",
-          "_fromPrevious": true
+          "error": "41 个可点击元素过小 (<44px)"
+        },
+        "cdn": {
+          "status": "ok",
+          "failedResources": [],
+          "error": null
         }
       },
       "overall": "warn",
-      "overallFailCount": 2
+      "overallFailCount": 1
     },
     {
       "name": "中文集团站",
@@ -127,13 +126,38 @@
         "15962976787"
       ],
       "checks": {
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 1315,
+          "error": null,
+          "details": {
+            "server": "nginx/1.20.1",
+            "contentType": "text/html",
+            "location": null
+          },
+          "redirect": null,
+          "_fromPrevious": false
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 45,
+          "issuer": "DigiCert Inc",
+          "subject": "holdwellgroup.com",
+          "validFrom": "Jun 18 00:00:00 2026 GMT",
+          "validTo": "Sep 15 23:59:59 2026 GMT",
+          "error": null,
+          "elapsedMs": 943,
+          "_fromPrevious": false
+        },
         "dns": {
           "status": "ok",
           "addresses": [
             "121.40.24.135"
           ],
           "error": null,
-          "via": "system"
+          "via": "system",
+          "_fromPrevious": false
         },
         "ports": [
           {
@@ -149,28 +173,6 @@
             "error": null
           }
         ],
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 45,
-          "issuer": "DigiCert Inc",
-          "subject": "holdwellgroup.com",
-          "validFrom": "Jun 18 00:00:00 2026 GMT",
-          "validTo": "Sep 15 23:59:59 2026 GMT",
-          "error": null,
-          "elapsedMs": 943
-        },
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 1315,
-          "error": null,
-          "details": {
-            "server": "nginx/1.20.1",
-            "contentType": "text/html",
-            "location": null
-          },
-          "redirect": null
-        },
         "security": {
           "status": "warn",
           "issues": [
@@ -182,47 +184,42 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy"
+          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy",
+          "_fromPrevious": false
         },
         "pagespeed_mobile": {
           "status": "fail",
           "strategy": "mobile",
-          "score": 52,
-          "fcp": "4.1 s",
-          "lcp": "12.0 s",
-          "tbt": "50 ms",
-          "cls": "0.166",
+          "score": null,
+          "fcp": null,
+          "lcp": null,
+          "tbt": null,
+          "cls": null,
           "cruxData": null,
-          "error": "手机端评分 52，低于阈值 70",
-          "attempts": 1,
-          "elapsedMs": 32902,
-          "_fromPrevious": true
+          "error": "API 错误: Lighthouse returned error: FAILED_DOCUMENT_REQUEST. Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests. (Details: net::ERR_TIMED_OUT)",
+          "attempts": 1
         },
         "pagespeed_desktop": {
           "status": "fail",
           "strategy": "desktop",
-          "score": 42,
-          "fcp": "1.8 s",
-          "lcp": "8.0 s",
-          "tbt": "10 ms",
-          "cls": "0.363",
+          "score": null,
+          "fcp": null,
+          "lcp": null,
+          "tbt": null,
+          "cls": null,
           "cruxData": null,
-          "error": "电脑端评分 42，低于阈值 90",
-          "attempts": 1,
-          "elapsedMs": 31284,
-          "_fromPrevious": true
-        },
-        "cdn": {
-          "status": "ok",
-          "failedResources": [],
-          "error": null,
-          "_fromPrevious": true
+          "error": "API 错误: Lighthouse returned error: FAILED_DOCUMENT_REQUEST. Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests. (Details: net::ERR_TIMED_OUT)",
+          "attempts": 1
         },
         "mobileAdapt": {
           "status": "ok",
           "issues": [],
-          "error": null,
-          "_fromPrevious": true
+          "error": null
+        },
+        "cdn": {
+          "status": "ok",
+          "failedResources": [],
+          "error": null
         }
       },
       "overall": "warn",
@@ -237,13 +234,38 @@
         "15962976787"
       ],
       "checks": {
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 361,
+          "error": null,
+          "details": {
+            "server": "cloudflare",
+            "contentType": "text/html; charset=utf-8",
+            "location": null
+          },
+          "redirect": null,
+          "_fromPrevious": false
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 86,
+          "issuer": "Let's Encrypt",
+          "subject": "www.holdwellparts.com",
+          "validFrom": "Jul 28 19:33:03 2026 GMT",
+          "validTo": "Oct 26 19:33:02 2026 GMT",
+          "error": null,
+          "elapsedMs": 268,
+          "_fromPrevious": false
+        },
         "dns": {
           "status": "ok",
           "addresses": [
             "23.227.38.74"
           ],
           "error": null,
-          "via": "system"
+          "via": "system",
+          "_fromPrevious": false
         },
         "ports": [
           {
@@ -259,28 +281,6 @@
             "error": null
           }
         ],
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 86,
-          "issuer": "Let's Encrypt",
-          "subject": "www.holdwellparts.com",
-          "validFrom": "Jul 28 19:33:03 2026 GMT",
-          "validTo": "Oct 26 19:33:02 2026 GMT",
-          "error": null,
-          "elapsedMs": 268
-        },
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 361,
-          "error": null,
-          "details": {
-            "server": "cloudflare",
-            "contentType": "text/html; charset=utf-8",
-            "location": null
-          },
-          "redirect": null
-        },
         "security": {
           "status": "warn",
           "issues": [
@@ -288,91 +288,84 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy"
+          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy",
+          "_fromPrevious": false
         },
         "pagespeed_mobile": {
           "status": "fail",
           "strategy": "mobile",
-          "score": 46,
-          "fcp": "5.1 s",
-          "lcp": "19.3 s",
-          "tbt": "430 ms",
+          "score": 42,
+          "fcp": "4.8 s",
+          "lcp": "8.8 s",
+          "tbt": "790 ms",
           "cls": "0",
           "cruxData": {
             "overall": "SLOW",
             "fcpMs": 3706,
-            "lcpMs": 3715,
+            "lcpMs": 3722,
             "cls": 0
           },
-          "error": "手机端评分 46，低于阈值 70",
+          "error": "手机端评分 42，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 30100,
-          "_fromPrevious": true
+          "elapsedMs": 23966
         },
         "pagespeed_desktop": {
           "status": "fail",
           "strategy": "desktop",
-          "score": 44,
+          "score": 42,
           "fcp": "1.0 s",
-          "lcp": "3.4 s",
-          "tbt": "1,140 ms",
+          "lcp": "4.2 s",
+          "tbt": "870 ms",
           "cls": "0",
           "cruxData": {
             "overall": "AVERAGE",
-            "fcpMs": 2423,
-            "lcpMs": 2591,
+            "fcpMs": 2310,
+            "lcpMs": 2431,
             "cls": 3
           },
-          "error": "电脑端评分 44，低于阈值 90",
-          "attempts": 2,
-          "elapsedMs": 28366,
-          "_fromPrevious": true
+          "error": "电脑端评分 42，低于阈值 90",
+          "attempts": 1,
+          "elapsedMs": 29421
         },
         "cdn": {
           "status": "fail",
           "failedResources": [
             {
-              "url": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=14937",
+              "url": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=15239",
               "status": 404,
               "type": "script"
             },
             {
-              "url": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=14937",
+              "url": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=15239",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "script"
             },
             {
-              "url": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice.js?v=14937",
+              "url": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice.js?v=15239",
               "status": 404,
               "type": "script"
             },
             {
-              "url": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice.js?v=14937",
+              "url": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice.js?v=15239",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "script"
             },
             {
-              "url": "https://ad.doubleclick.net/ccm/s/collect?auid=1358858811.1785044264&gtm=45be67m0h1v9206653626za200xec",
+              "url": "https://ad.doubleclick.net/ccm/s/collect?auid=1368838757.1785648624&gtm=45be67t1v9206653626za200zd9206653626xec",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             },
             {
-              "url": "https://www.google.com/ccm/collect?rcb=15&frm=0&auid=1358858811.1785044264&dt=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&en=page_view&dl=https%3A%2F%2Fwww.holdwellparts.com%2F&scrsrc=www.googletagmanager.com&rnd=120204408.1785044264&navt=n&npa=0&did=dN2ZkMj&gdid=dN2ZkMj&gtm=45be67m0h1v9206653626za200xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938469~118897920~118897930~119527019~119896803~120084214&apve=1&apvf=f&apvc=1&tids=AW-16883749241&tid=AW-16883749241&tft=1785044263720&tfd=1192&fmt=8",
+              "url": "https://www.google.com/ccm/collect?rcb=0&frm=0&auid=1368838757.1785648624&dt=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&en=page_view&dl=https%3A%2F%2Fwww.holdwellparts.com%2F&scrsrc=www.googletagmanager.com&rnd=781430293.1785648624&navt=n&npa=0&did=dN2ZkMj&gdid=dN2ZkMj&gtm=45be67t1v9206653626za200zd9206653626xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616986~115938465~115938468~118897920~118897930~119317811~119896802&apvc=1&tids=AW-16883749241&tid=AW-16883749241&tft=1785648624032&tfd=1004&fmt=8",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             },
             {
-              "url": "https://www.google.com/rmkt/collect/16883749241/?random=1785044263589&cv=11&fst=1785044263589&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be67m0h1v9206653626za200xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938469~118897920~118897930~119527019~119896803~120084214&u_w=800&u_h=600&url=https%3A%2F%2Fwww.holdwellparts.com%2F&rcb=15&frm=0&tiba=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&did=dN2ZkMj&gdid=dN2ZkMj&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1358858811.1785044264&uaa=&uab=&uafvl=&uamb=0&uam=&uap=&uapv=&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
-            {
-              "url": "https://www.holdwellparts.com/api/collect",
+              "url": "https://www.google.com/rmkt/collect/16883749241/?random=1785648623966&cv=11&fst=1785648623966&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be67t1v9206653626za200zd9206653626xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616986~115938465~115938468~118897920~118897930~119317811~119896802&u_w=800&u_h=600&url=https%3A%2F%2Fwww.holdwellparts.com%2F&rcb=0&frm=0&tiba=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&did=dN2ZkMj&gdid=dN2ZkMj&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1368838757.1785648624&uaa=&uab=&uafvl=&uamb=0&uam=&uap=&uapv=&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
@@ -384,23 +377,27 @@
               "type": "fetch"
             },
             {
+              "url": "https://www.holdwellparts.com/api/collect",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "fetch"
+            },
+            {
               "url": "https://www.holdwellparts.com/shopify_pay/accelerated_checkout",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             }
           ],
-          "error": "18 个资源加载失败",
-          "note": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=14937, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=14937, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice.js?v=14937",
-          "_fromPrevious": true
+          "error": "16 个资源加载失败",
+          "note": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=15239, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=15239, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice.js?v=15239"
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
-            "142 个可点击元素过小 (<44px)"
+            "141 个可点击元素过小 (<44px)"
           ],
-          "error": "142 个可点击元素过小 (<44px)",
-          "_fromPrevious": true
+          "error": "141 个可点击元素过小 (<44px)"
         }
       },
       "overall": "warn",
@@ -415,13 +412,38 @@
         "18616749320"
       ],
       "checks": {
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 716,
+          "error": null,
+          "details": {
+            "server": "cloudflare",
+            "contentType": "text/html; charset=utf-8",
+            "location": null
+          },
+          "redirect": null,
+          "_fromPrevious": false
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 86,
+          "issuer": "Let's Encrypt",
+          "subject": "www.eheparts.com",
+          "validFrom": "Jul 28 05:56:33 2026 GMT",
+          "validTo": "Oct 26 05:56:32 2026 GMT",
+          "error": null,
+          "elapsedMs": 263,
+          "_fromPrevious": false
+        },
         "dns": {
           "status": "ok",
           "addresses": [
             "23.227.38.74"
           ],
           "error": null,
-          "via": "system"
+          "via": "system",
+          "_fromPrevious": false
         },
         "ports": [
           {
@@ -437,28 +459,6 @@
             "error": null
           }
         ],
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 86,
-          "issuer": "Let's Encrypt",
-          "subject": "www.eheparts.com",
-          "validFrom": "Jul 28 05:56:33 2026 GMT",
-          "validTo": "Oct 26 05:56:32 2026 GMT",
-          "error": null,
-          "elapsedMs": 263
-        },
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 716,
-          "error": null,
-          "details": {
-            "server": "cloudflare",
-            "contentType": "text/html; charset=utf-8",
-            "location": null
-          },
-          "redirect": null
-        },
         "security": {
           "status": "warn",
           "issues": [
@@ -466,49 +466,54 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy"
+          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy",
+          "_fromPrevious": false
         },
         "pagespeed_mobile": {
           "status": "ok",
           "strategy": "mobile",
-          "score": 85,
-          "fcp": "1.9 s",
-          "lcp": "4.1 s",
-          "tbt": "90 ms",
+          "score": 72,
+          "fcp": "2.0 s",
+          "lcp": "6.1 s",
+          "tbt": "190 ms",
           "cls": "0",
           "cruxData": {
             "overall": "AVERAGE",
-            "fcpMs": 1450,
-            "lcpMs": 2071,
+            "fcpMs": 1513,
+            "lcpMs": 2209,
             "cls": 0
           },
           "error": null,
           "attempts": 1,
-          "elapsedMs": 42195,
-          "_fromPrevious": true
+          "elapsedMs": 50430
         },
         "pagespeed_desktop": {
-          "status": "ok",
+          "status": "fail",
           "strategy": "desktop",
-          "score": 97,
+          "score": 82,
           "fcp": "0.5 s",
-          "lcp": "0.9 s",
-          "tbt": "120 ms",
-          "cls": "0",
+          "lcp": "1.4 s",
+          "tbt": "240 ms",
+          "cls": "0.001",
           "cruxData": {
             "overall": "AVERAGE",
-            "fcpMs": 1142,
-            "lcpMs": 1792,
+            "fcpMs": 1271,
+            "lcpMs": 1924,
             "cls": 1
           },
-          "error": null,
+          "error": "电脑端评分 82，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 42157,
-          "_fromPrevious": true
+          "elapsedMs": 53774
         },
         "cdn": {
           "status": "fail",
           "failedResources": [
+            {
+              "url": "https://www.eheparts.com/api/collect",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "fetch"
+            },
             {
               "url": "https://www.eheparts.com/shopify_pay/accelerated_checkout",
               "status": 0,
@@ -516,10 +521,9 @@
               "type": "fetch"
             },
             {
-              "url": "https://www.eheparts.com/api/collect",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
+              "url": "https://www.eheparts.com/favicon.ico",
+              "status": 404,
+              "type": "other"
             },
             {
               "url": "https://code.tidio.co/oy2stcdjktgpxx901wvbztpn2qsswpo0.js?shop=eheparts.myshopify.com",
@@ -528,12 +532,7 @@
               "type": "script"
             },
             {
-              "url": "https://www.eheparts.com/favicon.ico",
-              "status": 404,
-              "type": "other"
-            },
-            {
-              "url": "https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+              "url": "https://analytics.google.com/g/collect?v=2&tid=G-JB9QQ5WMJN&gtm=45je67t1v9136271590za200zd9136271590&_p=1785648627450&_gaz=1&gcs=G111&gcd=13n3n3n3n5l1&npa=0&dma=0&gdid=dMDg0Yz.dMmQyMD&_eu=EAAAAGAC&_ng=1&are=1&cid=1809750576.1785648628&frm=2&ir=1&pscdl=noapi&rcb=19&sr=800x600&uaa=&uab=&uafvl=&uam=&uamb=0&uap=&uapv=&uaw=0&ul=en-us&gaf=2&_s=1&tag_exp=115938466~115938468~118395334~118897920~118897930~119896802&sid=1785648627&sct=1&seg=0&dl=https%3A%2F%2Fwww.eheparts.com%2F&dt=EHEPARTS%20online%20store%20special%20for%20new%20products&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=521",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
@@ -545,27 +544,25 @@
               "type": "fetch"
             },
             {
-              "url": "https://analytics.google.com/g/collect?v=2&tid=G-JB9QQ5WMJN&gtm=45je67m0v9136271590za200zd9136271590&_p=1785044267650&_gaz=1&gcs=G111&gcd=13n3n3n3n5l1&npa=0&dma=0&gdid=dMDg0Yz.dMmQyMD&_eu=EAAAAGAC&_ng=1&are=1&cid=362728096.1785044268&frm=2&ir=1&pscdl=noapi&rcb=15&sr=800x600&uaa=&uab=&uafvl=&uam=&uamb=0&uap=&uapv=&uaw=0&ul=en-us&gaf=2&_s=1&tag_exp=115938466~115938468~118395334~118897920~118897930~119896802&sid=1785044268&sct=1&seg=0&dl=https%3A%2F%2Fwww.eheparts.com%2F&dt=EHEPARTS%20online%20store%20special%20for%20new%20products&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=769",
+              "url": "https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             }
           ],
           "error": "7 个资源加载失败",
-          "note": "https://www.eheparts.com/shopify_pay/accelerated_checkout, https://www.eheparts.com/api/collect, https://code.tidio.co/oy2stcdjktgpxx901wvbztpn2qsswpo0.js?shop=eheparts.myshopify.com",
-          "_fromPrevious": true
+          "note": "https://www.eheparts.com/api/collect, https://www.eheparts.com/shopify_pay/accelerated_checkout, https://www.eheparts.com/favicon.ico"
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "139 个可点击元素过小 (<44px)"
           ],
-          "error": "139 个可点击元素过小 (<44px)",
-          "_fromPrevious": true
+          "error": "139 个可点击元素过小 (<44px)"
         }
       },
       "overall": "warn",
-      "overallFailCount": 2
+      "overallFailCount": 3
     },
     {
       "name": "单一类目在线成交站",
@@ -576,13 +573,18 @@
         "18667142620"
       ],
       "checks": {
-        "dns": {
+        "http": {
           "status": "ok",
-          "addresses": [
-            "23.227.38.74"
-          ],
+          "statusCode": 200,
+          "elapsedMs": 731,
           "error": null,
-          "via": "system"
+          "details": {
+            "server": "cloudflare",
+            "contentType": "text/html; charset=utf-8",
+            "location": null
+          },
+          "redirect": null,
+          "_fromPrevious": false
         },
         "ssl": {
           "status": "ok",
@@ -592,7 +594,17 @@
           "validFrom": "Jun 13 18:04:04 2026 GMT",
           "validTo": "Sep 11 18:04:03 2026 GMT",
           "error": null,
-          "elapsedMs": 220
+          "elapsedMs": 220,
+          "_fromPrevious": false
+        },
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "23.227.38.74"
+          ],
+          "error": null,
+          "via": "system",
+          "_fromPrevious": false
         },
         "ports": [
           {
@@ -608,18 +620,6 @@
             "error": null
           }
         ],
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 731,
-          "error": null,
-          "details": {
-            "server": "cloudflare",
-            "contentType": "text/html; charset=utf-8",
-            "location": null
-          },
-          "redirect": null
-        },
         "security": {
           "status": "warn",
           "issues": [
@@ -627,65 +627,63 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy"
+          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy",
+          "_fromPrevious": false
         },
         "pagespeed_mobile": {
           "status": "fail",
           "strategy": "mobile",
-          "score": 67,
+          "score": 61,
           "fcp": "1.8 s",
-          "lcp": "4.1 s",
-          "tbt": "610 ms",
-          "cls": "0.066",
+          "lcp": "4.6 s",
+          "tbt": "670 ms",
+          "cls": "0.065",
           "cruxData": {
             "overall": "AVERAGE",
-            "fcpMs": 1276,
-            "lcpMs": 2782,
+            "fcpMs": 1310,
+            "lcpMs": 2788,
             "cls": 4
           },
-          "error": "手机端评分 67，低于阈值 70",
+          "error": "手机端评分 61，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 33451,
-          "_fromPrevious": true
+          "elapsedMs": 34981
         },
         "pagespeed_desktop": {
-          "status": "fail",
+          "status": "ok",
           "strategy": "desktop",
-          "score": 80,
+          "score": 96,
           "fcp": "0.5 s",
           "lcp": "0.8 s",
-          "tbt": "370 ms",
-          "cls": "0.005",
+          "tbt": "90 ms",
+          "cls": "0.007",
           "cruxData": {
             "overall": "AVERAGE",
-            "fcpMs": 1164,
-            "lcpMs": 2285,
-            "cls": 3
+            "fcpMs": 1120,
+            "lcpMs": 2189,
+            "cls": 4
           },
-          "error": "电脑端评分 80，低于阈值 90",
+          "error": null,
           "attempts": 1,
-          "elapsedMs": 36623,
-          "_fromPrevious": true
+          "elapsedMs": 30844
         },
         "cdn": {
           "status": "fail",
           "failedResources": [
             {
-              "url": "https://www.stopsolenoid.com/shopify_pay/accelerated_checkout",
+              "url": "https://www.stopsolenoid.com/api/collect",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             },
             {
-              "url": "https://www.stopsolenoid.com/api/collect",
+              "url": "https://www.stopsolenoid.com/shopify_pay/accelerated_checkout",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             }
           ],
           "error": "2 个资源加载失败",
-          "note": "https://www.stopsolenoid.com/shopify_pay/accelerated_checkout, https://www.stopsolenoid.com/api/collect",
-          "_fromPrevious": true
+          "note": "https://www.stopsolenoid.com/api/collect, https://www.stopsolenoid.com/shopify_pay/accelerated_checkout"
         },
         "mobileAdapt": {
           "status": "fail",
@@ -693,12 +691,11 @@
             "11 处文字过小 (<12px)",
             "115 个可点击元素过小 (<44px)"
           ],
-          "error": "11 处文字过小 (<12px); 115 个可点击元素过小 (<44px)",
-          "_fromPrevious": true
+          "error": "11 处文字过小 (<12px); 115 个可点击元素过小 (<44px)"
         }
       },
       "overall": "warn",
-      "overallFailCount": 4
+      "overallFailCount": 3
     },
     {
       "name": "高空车整机站",
@@ -709,24 +706,6 @@
         "17857578339"
       ],
       "checks": {
-        "dns": {
-          "status": "ok",
-          "addresses": [
-            "47.88.49.112"
-          ],
-          "error": null,
-          "via": "system"
-        },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 51,
-          "issuer": "Let's Encrypt",
-          "subject": "*.hwlifts.com",
-          "validFrom": "Jun 24 02:41:19 2026 GMT",
-          "validTo": "Sep 22 02:41:18 2026 GMT",
-          "error": null,
-          "elapsedMs": 417
-        },
         "http": {
           "status": "ok",
           "statusCode": 200,
@@ -737,7 +716,28 @@
             "contentType": "text/html; charset=UTF-8",
             "location": null
           },
-          "redirect": null
+          "redirect": null,
+          "_fromPrevious": false
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 51,
+          "issuer": "Let's Encrypt",
+          "subject": "*.hwlifts.com",
+          "validFrom": "Jun 24 02:41:19 2026 GMT",
+          "validTo": "Sep 22 02:41:18 2026 GMT",
+          "error": null,
+          "elapsedMs": 417,
+          "_fromPrevious": false
+        },
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "47.88.49.112"
+          ],
+          "error": null,
+          "via": "system",
+          "_fromPrevious": false
         },
         "ports": [
           {
@@ -764,52 +764,57 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy"
+          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy",
+          "_fromPrevious": false
         },
         "pagespeed_mobile": {
           "status": "fail",
           "strategy": "mobile",
-          "score": 58,
-          "fcp": "2.6 s",
-          "lcp": "5.3 s",
-          "tbt": "490 ms",
-          "cls": "0.036",
+          "score": 39,
+          "fcp": "11.7 s",
+          "lcp": "16.8 s",
+          "tbt": "410 ms",
+          "cls": "0.146",
           "cruxData": null,
-          "error": "手机端评分 58，低于阈值 70",
+          "error": "手机端评分 39，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 28427,
-          "_fromPrevious": true
+          "elapsedMs": 28046
         },
         "pagespeed_desktop": {
           "status": "fail",
           "strategy": "desktop",
-          "score": null,
-          "fcp": null,
-          "lcp": null,
-          "tbt": null,
-          "cls": null,
+          "score": 70,
+          "fcp": "0.6 s",
+          "lcp": "1.6 s",
+          "tbt": "400 ms",
+          "cls": "0.003",
           "cruxData": null,
-          "error": "API 错误: Lighthouse returned error: Something went wrong.",
+          "error": "电脑端评分 70，低于阈值 90",
           "attempts": 1,
-          "_fromPrevious": true
+          "elapsedMs": 41600
         },
         "cdn": {
-          "status": "ok",
-          "failedResources": [],
-          "error": null,
-          "_fromPrevious": true
+          "status": "fail",
+          "failedResources": [
+            {
+              "url": "https://mc.yandex.com/sync_cookie_image_decide?cid=98822021&scid=90a60273-794c-80a7-6ca2-94e213e1aae6&token=11107.tdJxwGfY8O0Q8GEA_wwiLuVrrK2Be1gRwmyg2iUvGxQTe0ub5M3dCjOv9IGKctT3SBJOuIYh6qiSCc57y25y0CTXDnoYUyhXAi5iIzXEdIY%2C.fmnp-VZooQE1AIJLw7Y8O8q2GyM%2C",
+              "status": 400,
+              "type": "image"
+            }
+          ],
+          "error": "1 个资源加载失败",
+          "note": "https://mc.yandex.com/sync_cookie_image_decide?cid=98822021&scid=90a60273-794c-80a7-6ca2-94e213e1aae6&token=11107.tdJxwGfY8O0Q8GEA_wwiLuVrrK2Be1gRwmyg2iUvGxQTe0ub5M3dCjOv9IGKctT3SBJOuIYh6qiSCc57y25y0CTXDnoYUyhXAi5iIzXEdIY%2C.fmnp-VZooQE1AIJLw7Y8O8q2GyM%2C"
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "31 个可点击元素过小 (<44px)"
           ],
-          "error": "31 个可点击元素过小 (<44px)",
-          "_fromPrevious": true
+          "error": "31 个可点击元素过小 (<44px)"
         }
       },
       "overall": "warn",
-      "overallFailCount": 3
+      "overallFailCount": 4
     },
     {
       "name": "资讯站",
@@ -820,24 +825,6 @@
         "18638569220"
       ],
       "checks": {
-        "dns": {
-          "status": "ok",
-          "addresses": [
-            "47.254.4.210"
-          ],
-          "error": null,
-          "via": "system"
-        },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 103,
-          "issuer": "DigiCert Inc",
-          "subject": "freepartsbook.com",
-          "validFrom": "May 12 00:00:00 2026 GMT",
-          "validTo": "Nov 12 23:59:59 2026 GMT",
-          "error": null,
-          "elapsedMs": 292
-        },
         "http": {
           "status": "ok",
           "statusCode": 200,
@@ -848,7 +835,28 @@
             "contentType": "text/html;charset=utf-8",
             "location": null
           },
-          "redirect": null
+          "redirect": null,
+          "_fromPrevious": false
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 103,
+          "issuer": "DigiCert Inc",
+          "subject": "freepartsbook.com",
+          "validFrom": "May 12 00:00:00 2026 GMT",
+          "validTo": "Nov 12 23:59:59 2026 GMT",
+          "error": null,
+          "elapsedMs": 292,
+          "_fromPrevious": false
+        },
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "47.254.4.210"
+          ],
+          "error": null,
+          "via": "system",
+          "_fromPrevious": false
         },
         "ports": [
           {
@@ -875,35 +883,34 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy"
+          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy",
+          "_fromPrevious": false
         },
         "pagespeed_mobile": {
-          "status": "fail",
+          "status": "ok",
           "strategy": "mobile",
-          "score": 58,
-          "fcp": "6.9 s",
-          "lcp": "16.4 s",
-          "tbt": "50 ms",
-          "cls": "0.048",
+          "score": 72,
+          "fcp": "2.0 s",
+          "lcp": "8.6 s",
+          "tbt": "150 ms",
+          "cls": "0.004",
           "cruxData": null,
-          "error": "手机端评分 58，低于阈值 70",
+          "error": null,
           "attempts": 1,
-          "elapsedMs": 50316,
-          "_fromPrevious": true
+          "elapsedMs": 17621
         },
         "pagespeed_desktop": {
-          "status": "fail",
+          "status": "ok",
           "strategy": "desktop",
-          "score": 89,
-          "fcp": "0.7 s",
+          "score": 90,
+          "fcp": "0.6 s",
           "lcp": "1.6 s",
-          "tbt": "100 ms",
-          "cls": "0.01",
+          "tbt": "140 ms",
+          "cls": "0.008",
           "cruxData": null,
-          "error": "电脑端评分 89，低于阈值 90",
+          "error": null,
           "attempts": 1,
-          "elapsedMs": 17122,
-          "_fromPrevious": true
+          "elapsedMs": 18824
         },
         "cdn": {
           "status": "fail",
@@ -925,20 +932,18 @@
             }
           ],
           "error": "3 个资源加载失败",
-          "note": "https://freepartsbook.com/api/brand/all, https://freepartsbook.com/api/parts/sku/count, https://freepartsbook.com/api/online/user/detail",
-          "_fromPrevious": true
+          "note": "https://freepartsbook.com/api/brand/all, https://freepartsbook.com/api/parts/sku/count, https://freepartsbook.com/api/online/user/detail"
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "8 个可点击元素过小 (<44px)"
           ],
-          "error": "8 个可点击元素过小 (<44px)",
-          "_fromPrevious": true
+          "error": "8 个可点击元素过小 (<44px)"
         }
       },
       "overall": "warn",
-      "overallFailCount": 4
+      "overallFailCount": 2
     },
     {
       "name": "美国项目站",
@@ -949,38 +954,6 @@
         "15236186966"
       ],
       "checks": {
-        "dns": {
-          "status": "ok",
-          "addresses": [
-            "23.227.38.74"
-          ],
-          "error": null,
-          "via": "system"
-        },
-        "ports": [
-          {
-            "port": 80,
-            "status": "ok",
-            "elapsedMs": 557,
-            "error": null
-          },
-          {
-            "port": 443,
-            "status": "ok",
-            "elapsedMs": 3,
-            "error": null
-          }
-        ],
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 85,
-          "issuer": "Let's Encrypt",
-          "subject": "www.partwerks.com",
-          "validFrom": "Jul 28 04:49:03 2026 GMT",
-          "validTo": "Oct 26 04:49:02 2026 GMT",
-          "error": null,
-          "elapsedMs": 566
-        },
         "http": {
           "status": "ok",
           "statusCode": 200,
@@ -996,8 +969,43 @@
             "to": "https://partwerks.com/",
             "code": 301
           },
-          "note": "301 → https://partwerks.com/"
+          "note": "301 → https://partwerks.com/",
+          "_fromPrevious": false
         },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 85,
+          "issuer": "Let's Encrypt",
+          "subject": "www.partwerks.com",
+          "validFrom": "Jul 28 04:49:03 2026 GMT",
+          "validTo": "Oct 26 04:49:02 2026 GMT",
+          "error": null,
+          "elapsedMs": 566,
+          "_fromPrevious": false
+        },
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "23.227.38.74"
+          ],
+          "error": null,
+          "via": "system",
+          "_fromPrevious": false
+        },
+        "ports": [
+          {
+            "port": 80,
+            "status": "ok",
+            "elapsedMs": 557,
+            "error": null
+          },
+          {
+            "port": 443,
+            "status": "ok",
+            "elapsedMs": 3,
+            "error": null
+          }
+        ],
         "security": {
           "status": "warn",
           "issues": [
@@ -1005,40 +1013,50 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy"
+          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy",
+          "_fromPrevious": false
         },
         "pagespeed_mobile": {
           "status": "fail",
           "strategy": "mobile",
-          "score": 56,
+          "score": 48,
           "fcp": "3.3 s",
-          "lcp": "12.7 s",
-          "tbt": "300 ms",
-          "cls": "0",
+          "lcp": "10.3 s",
+          "tbt": "490 ms",
+          "cls": "0.023",
           "cruxData": null,
-          "error": "手机端评分 56，低于阈值 70",
+          "error": "手机端评分 48，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 17775,
-          "_fromPrevious": true
+          "elapsedMs": 23650
         },
         "pagespeed_desktop": {
           "status": "fail",
           "strategy": "desktop",
-          "score": 76,
-          "fcp": "0.7 s",
-          "lcp": "2.5 s",
-          "tbt": "80 ms",
+          "score": 72,
+          "fcp": "0.8 s",
+          "lcp": "3.7 s",
+          "tbt": "140 ms",
           "cls": "0",
           "cruxData": null,
-          "error": "电脑端评分 76，低于阈值 90",
+          "error": "电脑端评分 72，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 31702,
-          "_fromPrevious": true
+          "elapsedMs": 14349
         },
         "cdn": {
           "status": "fail",
           "failedResources": [
             {
+              "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1014",
+              "status": 404,
+              "type": "script"
+            },
+            {
+              "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1014",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "script"
+            },
+            {
               "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1014",
               "status": 404,
               "type": "script"
@@ -1050,15 +1068,22 @@
               "type": "script"
             },
             {
-              "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1014",
-              "status": 404,
-              "type": "script"
-            },
-            {
-              "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1014",
+              "url": "https://ad.doubleclick.net/ccm/s/collect?auid=336068012.1785648641&gtm=45be67u0h2v9206653626za200zd9206653626xec",
               "status": 0,
               "error": "net::ERR_ABORTED",
-              "type": "script"
+              "type": "fetch"
+            },
+            {
+              "url": "https://www.google.com/ccm/collect?rcb=11&frm=0&auid=336068012.1785648641&dt=Partwerks&en=page_view&dl=https%3A%2F%2Fpartwerks.com%2F&scrsrc=www.googletagmanager.com&rnd=917785356.1785648641&navt=n&npa=0&did=dN2ZkMj&gdid=dN2ZkMj&gtm=45be67u0h2v9206653626za200zd9206653626xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938468~118131809~118897920~118897930~119896802&apvc=1&tids=AW-16883749241&tid=AW-16883749241&tft=1785648641371&tfd=1770&fmt=8",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "fetch"
+            },
+            {
+              "url": "https://www.google.com/rmkt/collect/16883749241/?random=1785648641320&cv=11&fst=1785648641320&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be67u0h2v9206653626za200zd9206653626xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938468~118131809~118897920~118897930~119896802&u_w=800&u_h=600&url=https%3A%2F%2Fpartwerks.com%2F&rcb=11&frm=0&tiba=Partwerks&did=dN2ZkMj&gdid=dN2ZkMj&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=336068012.1785648641&uaa=&uab=&uafvl=&uamb=0&uam=&uap=&uapv=&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "fetch"
             },
             {
               "url": "https://monorail-edge.shopifysvc.com/v1/produce",
@@ -1073,41 +1098,21 @@
               "type": "fetch"
             },
             {
-              "url": "https://www.google.com/ccm/collect?rcb=11&frm=0&auid=1858730942.1785044282&dt=Partwerks&en=page_view&dl=https%3A%2F%2Fpartwerks.com%2F&scrsrc=www.googletagmanager.com&rnd=1794718040.1785044282&navt=n&npa=0&did=dN2ZkMj&gdid=dN2ZkMj&gtm=45be67m0v9206653626za200xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897920~118897930~119896802&apve=1&apvf=f&apvc=1&tids=AW-16883749241&tid=AW-16883749241&tft=1785044281717&tfd=1841&fmt=8",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
-            {
-              "url": "https://www.google.com/rmkt/collect/16883749241/?random=1785044281666&cv=11&fst=1785044281666&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be67m0v9206653626za200xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897920~118897930~119896802&u_w=800&u_h=600&url=https%3A%2F%2Fpartwerks.com%2F&rcb=11&frm=0&tiba=Partwerks&did=dN2ZkMj&gdid=dN2ZkMj&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1858730942.1785044282&uaa=&uab=&uafvl=&uamb=0&uam=&uap=&uapv=&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
-            {
-              "url": "https://analytics.google.com/g/collect?v=2&tid=G-XKMTRJVM8R&gtm=45je67m0v9136873422za20g&_p=1785044280833&_gaz=1&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAIAGAC&are=1&cid=421591133.1785044282&frm=0&pscdl=noapi&rcb=13&sr=800x600&uaa=&uab=&uafvl=&uam=&uamb=0&uap=&uapv=&uaw=0&ul=en-us&gaf=2&_s=1&tag_exp=115938465~115938469~118395334~118897920~118897930~119896802&sid=1785044281&sct=1&seg=0&dl=https%3A%2F%2Fpartwerks.com%2F&dt=Partwerks&en=page_view&_fv=1&_ss=1&tfd=1990",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
-            {
-              "url": "https://www.google.com/rmkt/collect/659039651/?random=1785044281938&cv=11&fst=1785044281938&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be67m0za200xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~118395333~118897920~118897930~119527019~119896803&u_w=800&u_h=600&url=https%3A%2F%2Fpartwerks.com%2F&rcb=9&frm=0&tiba=Partwerks&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1858730942.1785044282&uaa=&uab=&uafvl=&uamb=0&uam=&uap=&uapv=&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5",
+              "url": "https://www.google.com/rmkt/collect/659039651/?random=1785648641817&cv=11&fst=1785648641817&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be67u0h2za200zb9206653626zd9206653626xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118131809~118395334~118897920~118897930~119896803&u_w=800&u_h=600&url=https%3A%2F%2Fpartwerks.com%2F&rcb=19&frm=0&tiba=Partwerks&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=336068012.1785648641&uaa=&uab=&uafvl=&uamb=0&uam=&uap=&uapv=&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             }
           ],
           "error": "12 个资源加载失败",
-          "note": "https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1014, https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1014, https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1014",
-          "_fromPrevious": true
+          "note": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1014, https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1014, https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1014"
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "98 个可点击元素过小 (<44px)"
           ],
-          "error": "98 个可点击元素过小 (<44px)",
-          "_fromPrevious": true
+          "error": "98 个可点击元素过小 (<44px)"
         }
       },
       "overall": "warn",
