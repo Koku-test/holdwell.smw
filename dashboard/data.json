@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-11-01T08:20:05.606Z",
-  "updatedAtCN": "2026/11/1 16:20:05",
+  "updatedAt": "2026-11-01T08:41:48.122Z",
+  "updatedAtCN": "2026/11/1 16:41:48",
   "phase1At": "2026-10-29T07:45:00.848Z",
-  "phase2At": "2026-11-01T08:20:05.642Z",
+  "phase2At": "2026-11-01T08:41:48.155Z",
   "sites": [
     {
       "name": "品牌站",
@@ -73,28 +73,28 @@
         "pagespeed_mobile": {
           "status": "ok",
           "strategy": "mobile",
-          "score": 77,
+          "score": 81,
           "fcp": "1.8 s",
-          "lcp": "4.3 s",
-          "tbt": "60 ms",
+          "lcp": "3.9 s",
+          "tbt": "30 ms",
           "cls": "0.022",
           "cruxData": null,
           "error": null,
           "attempts": 1,
-          "elapsedMs": 23543
+          "elapsedMs": 22038
         },
         "pagespeed_desktop": {
-          "status": "ok",
+          "status": "fail",
           "strategy": "desktop",
-          "score": 93,
-          "fcp": "0.4 s",
-          "lcp": "0.9 s",
+          "score": 89,
+          "fcp": "0.6 s",
+          "lcp": "1.0 s",
           "tbt": "0 ms",
-          "cls": "0.015",
+          "cls": "0.018",
           "cruxData": null,
-          "error": null,
+          "error": "电脑端评分 89，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 20183
+          "elapsedMs": 30563
         },
         "mobileAdapt": {
           "status": "fail",
@@ -110,7 +110,7 @@
         }
       },
       "overall": "warn",
-      "overallFailCount": 1
+      "overallFailCount": 2
     },
     {
       "name": "中文集团站",
@@ -184,44 +184,43 @@
           "_fromPrevious": false
         },
         "pagespeed_mobile": {
-          "status": "ok",
+          "status": "fail",
           "strategy": "mobile",
-          "score": 74,
+          "score": 68,
           "fcp": "3.5 s",
           "lcp": "3.5 s",
-          "tbt": "80 ms",
-          "cls": "0",
+          "tbt": "60 ms",
+          "cls": "0.165",
           "cruxData": null,
-          "error": null,
+          "error": "手机端评分 68，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 26981
+          "elapsedMs": 31800
         },
         "pagespeed_desktop": {
           "status": "fail",
           "strategy": "desktop",
-          "score": 47,
-          "fcp": "0.9 s",
-          "lcp": "13.0 s",
-          "tbt": "50 ms",
-          "cls": "0.363",
+          "score": null,
+          "fcp": null,
+          "lcp": null,
+          "tbt": null,
+          "cls": null,
           "cruxData": null,
-          "error": "电脑端评分 47，低于阈值 90",
-          "attempts": 1,
-          "elapsedMs": 25133
-        },
-        "mobileAdapt": {
-          "status": "ok",
-          "issues": [],
-          "error": null
+          "error": "API 错误: Lighthouse returned error: FAILED_DOCUMENT_REQUEST. Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests. (Details: net::ERR_TIMED_OUT)",
+          "attempts": 1
         },
         "cdn": {
-          "status": "ok",
+          "status": "fail",
           "failedResources": [],
-          "error": null
+          "error": "Navigation timeout of 30000 ms exceeded"
+        },
+        "mobileAdapt": {
+          "status": "fail",
+          "issues": [],
+          "error": "Navigation timeout of 30000 ms exceeded"
         }
       },
       "overall": "warn",
-      "overallFailCount": 1
+      "overallFailCount": 4
     },
     {
       "name": "品牌在线成交站",
@@ -292,10 +291,10 @@
         "pagespeed_mobile": {
           "status": "fail",
           "strategy": "mobile",
-          "score": 53,
+          "score": 61,
           "fcp": "2.1 s",
-          "lcp": "12.9 s",
-          "tbt": "630 ms",
+          "lcp": "8.7 s",
+          "tbt": "380 ms",
           "cls": "0",
           "cruxData": {
             "overall": "SLOW",
@@ -303,17 +302,17 @@
             "lcpMs": 3667,
             "cls": 0
           },
-          "error": "手机端评分 53，低于阈值 70",
+          "error": "手机端评分 61，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 28266
+          "elapsedMs": 24164
         },
         "pagespeed_desktop": {
           "status": "fail",
           "strategy": "desktop",
-          "score": 64,
+          "score": 62,
           "fcp": "0.5 s",
-          "lcp": "2.5 s",
-          "tbt": "380 ms",
+          "lcp": "2.4 s",
+          "tbt": "440 ms",
           "cls": "0",
           "cruxData": {
             "overall": "AVERAGE",
@@ -321,9 +320,9 @@
             "lcpMs": 3051,
             "cls": 3
           },
-          "error": "电脑端评分 64，低于阈值 90",
+          "error": "电脑端评分 62，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 26541
+          "elapsedMs": 27490
         },
         "cdn": {
           "status": "fail",
@@ -351,25 +350,19 @@
               "type": "script"
             },
             {
-              "url": "https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1609248997.1793521456&dt=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&tid=AW-16883749241&en=page_view&dl=https%3A%2F%2Fwww.holdwellparts.com%2F&scrsrc=www.googletagmanager.com&rnd=913231115.1793521456&navt=n&npa=0&did=dN2ZkMj&gdid=dN2ZkMj&gtm=45be6as1v9206653626za208xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121191153~121246026~121246034~123691370~123814945&tft=1793521456168&tfd=1020&tids=AW-16883749241&fmt=8",
+              "url": "https://www.google.com/rmkt/collect/16883749241/?random=1793522795325&cv=11&fst=1793522795325&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6as1v9206653626za208zd9206653626xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~117227714~118897920~118897930~120213116~120385422~120412528~120420415~120469145~120469153~121246026~121246034~123691370&u_w=800&u_h=600&url=https%3A%2F%2Fwww.holdwellparts.com%2F&rcb=5&frm=0&tiba=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&did=dN2ZkMj&gdid=dN2ZkMj&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=533785219.1793522795&data=event%3Dgtag.config&ept=68&gcp=5",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             },
             {
-              "url": "https://ad.doubleclick.net/ccm/s/collect?auid=1609248997.1793521456&gtm=45be6as1v9206653626za208xecxf1&fmt=8",
+              "url": "https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=533785219.1793522795&dt=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&tid=AW-16883749241&en=page_view&dl=https%3A%2F%2Fwww.holdwellparts.com%2F&scrsrc=www.googletagmanager.com&rnd=298546231.1793522795&navt=n&npa=0&did=dN2ZkMj&gdid=dN2ZkMj&gtm=45be6as1v9206653626za208zd9206653626xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~117227714~118897920~118897930~120213116~120385422~120412528~120420415~120469145~120469153~121246026~121246034~123691370&tft=1793522795458&tfd=1129&tids=AW-16883749241&fmt=8",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             },
             {
-              "url": "https://www.google.com/rmkt/collect/16883749241/?random=1793521456050&cv=11&fst=1793521456050&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6as1v9206653626za208xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121191153~121246026~121246034~123691370~123814945&u_w=800&u_h=600&url=https%3A%2F%2Fwww.holdwellparts.com%2F&rcb=9&frm=0&tiba=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&did=dN2ZkMj&gdid=dN2ZkMj&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1609248997.1793521456&data=event%3Dgtag.config&ept=68&gcp=5",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
-            {
-              "url": "https://www.holdwellparts.com/api/collect",
+              "url": "https://ad.doubleclick.net/ccm/s/collect?auid=533785219.1793522795&gtm=45be6as1v9206653626za208zd9206653626xecxf1&fmt=8",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
@@ -381,21 +374,27 @@
               "type": "fetch"
             },
             {
-              "url": "https://analytics.google.com/g/collect?v=2&tid=G-XKMTRJVM8R&gtm=45je6at0h2v9136873422za200zd9136873422xf1&_p=1793521456698&_gaz=1&gcs=G111&gcd=13n3n3n3n5l1&npa=0&dma=0&gdid=dMDg0Yz.dMmQyMD&_eu=EAAAAGAC&cid=883863933.1793521457&frm=2&ir=1&pscdl=noapi&rcb=17&sr=800x600&uaa=&uab=&uafvl=&uam=&uamb=0&uap=&uapv=&uaw=0&ul=en-us&gaf=2&_s=1&tag_exp=115616985~115938465~115938468~118897920~118897930~120213116~120385423~120469145~120469153~121246026~121246034~123691370&sid=1793521457&sct=1&seg=0&dl=https%3A%2F%2Fwww.holdwellparts.com%2F&dt=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=467",
+              "url": "https://www.holdwellparts.com/api/collect",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "fetch"
+            },
+            {
+              "url": "https://analytics.google.com/g/collect?v=2&tid=G-XKMTRJVM8R&gtm=45je6as1v9136873422za200zd9136873422xf1&_p=1793522796040&_gaz=1&gcs=G111&gcd=13n3n3n3n5l1&npa=0&dma=0&gdid=dMDg0Yz.dMmQyMD&_eu=EAAAAGAC&cid=1134782676.1793522796&frm=2&ir=1&pscdl=noapi&rcb=8&sr=800x600&uaa=&uab=&uafvl=&uam=&uamb=0&uap=&uapv=&uaw=0&ul=en-us&gaf=2&_s=1&tag_exp=115938465~115938469~118897920~118897930~120213116~120385423~120420415~120469145~120469153~121246026~121246034~123691370~123814944&sid=1793522796&sct=1&seg=0&dl=https%3A%2F%2Fwww.holdwellparts.com%2F&dt=Holdwell%20Aftermarket%20Parts%20for%20Diesel%20engine%20%26%20Applications.%20%E2%80%93%20Holdwell%20Parts&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=465",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             }
           ],
-          "error": "16 个资源加载失败",
+          "error": "15 个资源加载失败",
           "note": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=19475, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=19475, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice.js?v=19475"
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
-            "141 个可点击元素过小 (<44px)"
+            "142 个可点击元素过小 (<44px)"
           ],
-          "error": "141 个可点击元素过小 (<44px)"
+          "error": "142 个可点击元素过小 (<44px)"
         }
       },
       "overall": "warn",
@@ -468,30 +467,30 @@
           "_fromPrevious": false
         },
         "pagespeed_mobile": {
-          "status": "fail",
+          "status": "ok",
           "strategy": "mobile",
-          "score": 69,
-          "fcp": "2.4 s",
-          "lcp": "8.0 s",
+          "score": 82,
+          "fcp": "1.2 s",
+          "lcp": "3.4 s",
           "tbt": "0 ms",
-          "cls": "0.001",
+          "cls": "0.002",
           "cruxData": {
             "overall": "AVERAGE",
             "fcpMs": 1454,
             "lcpMs": 2166,
             "cls": 0
           },
-          "error": "手机端评分 69，低于阈值 70",
+          "error": null,
           "attempts": 1,
-          "elapsedMs": 40948
+          "elapsedMs": 50602
         },
         "pagespeed_desktop": {
-          "status": "ok",
+          "status": "fail",
           "strategy": "desktop",
-          "score": 99,
+          "score": 89,
           "fcp": "0.3 s",
-          "lcp": "0.9 s",
-          "tbt": "10 ms",
+          "lcp": "1.0 s",
+          "tbt": "0 ms",
           "cls": "0.001",
           "cruxData": {
             "overall": "AVERAGE",
@@ -499,9 +498,9 @@
             "lcpMs": 1928,
             "cls": 1
           },
-          "error": null,
+          "error": "电脑端评分 89，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 51289
+          "elapsedMs": 51576
         },
         "cdn": {
           "status": "fail",
@@ -530,7 +529,7 @@
               "type": "other"
             },
             {
-              "url": "https://analytics.google.com/g/collect?v=2&tid=G-JB9QQ5WMJN&gtm=45je6as1v9136271590za200zd9136271590xf1&_p=1793521460734&_gaz=1&gcs=G111&gcd=13n3n3n3n5l1&npa=0&dma=0&gdid=dMDg0Yz.dMmQyMD&_eu=EAAAAGAC&_ng=1&cid=2110633520.1793521461&frm=2&ir=1&pscdl=noapi&rcb=16&sr=800x600&uaa=&uab=&uafvl=&uam=&uamb=0&uap=&uapv=&uaw=0&ul=en-us&gaf=2&_s=1&tag_exp=115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121246026~121246034~123620775~123636746~123691370~123814185&sid=1793521461&sct=1&seg=0&dl=https%3A%2F%2Fwww.eheparts.com%2F&dt=EHEPARTS%20online%20store%20special%20for%20new%20products&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=646",
+              "url": "https://analytics.google.com/g/collect?v=2&tid=G-JB9QQ5WMJN&gtm=45je6as1v9136271590za200zd9136271590xf1&_p=1793522801813&_gaz=1&gcs=G111&gcd=13n3n3n3n5l1&npa=0&dma=0&gdid=dMDg0Yz.dMmQyMD&_eu=EAAAAGAC&_ng=1&cid=881040622.1793522802&frm=2&ir=1&pscdl=noapi&rcb=15&sr=800x600&uaa=&uab=&uafvl=&uam=&uamb=0&uap=&uapv=&uaw=0&ul=en-us&gaf=2&_s=1&tag_exp=115938465~115938468~118897920~118897930~120213116~120385423~120469145~120469153~121246026~121246034~123636747~123691370~123814183&sid=1793522802&sct=1&seg=0&dl=https%3A%2F%2Fwww.eheparts.com%2F&dt=EHEPARTS%20online%20store%20special%20for%20new%20products&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=638",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
@@ -619,10 +618,10 @@
         "pagespeed_mobile": {
           "status": "ok",
           "strategy": "mobile",
-          "score": 83,
+          "score": 89,
           "fcp": "1.1 s",
-          "lcp": "3.4 s",
-          "tbt": "200 ms",
+          "lcp": "3.1 s",
+          "tbt": "130 ms",
           "cls": "0.066",
           "cruxData": {
             "overall": "AVERAGE",
@@ -632,15 +631,15 @@
           },
           "error": null,
           "attempts": 1,
-          "elapsedMs": 38704
+          "elapsedMs": 36147
         },
         "pagespeed_desktop": {
-          "status": "fail",
+          "status": "ok",
           "strategy": "desktop",
-          "score": 88,
-          "fcp": "0.5 s",
-          "lcp": "0.7 s",
-          "tbt": "200 ms",
+          "score": 92,
+          "fcp": "0.3 s",
+          "lcp": "1.2 s",
+          "tbt": "40 ms",
           "cls": "0.005",
           "cruxData": {
             "overall": "AVERAGE",
@@ -648,19 +647,13 @@
             "lcpMs": 2550,
             "cls": 3
           },
-          "error": "电脑端评分 88，低于阈值 90",
+          "error": null,
           "attempts": 1,
-          "elapsedMs": 41629
+          "elapsedMs": 39420
         },
         "cdn": {
           "status": "fail",
           "failedResources": [
-            {
-              "url": "https://www.stopsolenoid.com/api/event/collect",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
             {
               "url": "https://www.stopsolenoid.com/api/collect",
               "status": 0,
@@ -672,16 +665,10 @@
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
-            },
-            {
-              "url": "https://www.stopsolenoid.com/api/event/collect",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
             }
           ],
-          "error": "4 个资源加载失败",
-          "note": "https://www.stopsolenoid.com/api/event/collect, https://www.stopsolenoid.com/api/collect, https://www.stopsolenoid.com/shopify_pay/accelerated_checkout"
+          "error": "2 个资源加载失败",
+          "note": "https://www.stopsolenoid.com/api/collect, https://www.stopsolenoid.com/shopify_pay/accelerated_checkout"
         },
         "mobileAdapt": {
           "status": "fail",
@@ -693,7 +680,7 @@
         }
       },
       "overall": "warn",
-      "overallFailCount": 3
+      "overallFailCount": 2
     },
     {
       "name": "高空车整机站",
@@ -766,35 +753,42 @@
           "_fromPrevious": false
         },
         "pagespeed_mobile": {
-          "status": "fail",
+          "status": "ok",
           "strategy": "mobile",
-          "score": 40,
-          "fcp": "7.8 s",
-          "lcp": "16.1 s",
-          "tbt": "440 ms",
-          "cls": "0.146",
+          "score": 71,
+          "fcp": "2.0 s",
+          "lcp": "5.0 s",
+          "tbt": "320 ms",
+          "cls": "0.061",
           "cruxData": null,
-          "error": "手机端评分 40，低于阈值 70",
+          "error": null,
           "attempts": 1,
-          "elapsedMs": 20524
+          "elapsedMs": 17164
         },
         "pagespeed_desktop": {
           "status": "ok",
           "strategy": "desktop",
-          "score": 94,
+          "score": 93,
           "fcp": "0.5 s",
-          "lcp": "1.3 s",
-          "tbt": "120 ms",
+          "lcp": "1.0 s",
+          "tbt": "90 ms",
           "cls": "0.006",
           "cruxData": null,
           "error": null,
           "attempts": 1,
-          "elapsedMs": 15707
+          "elapsedMs": 22957
         },
         "cdn": {
-          "status": "ok",
-          "failedResources": [],
-          "error": null
+          "status": "fail",
+          "failedResources": [
+            {
+              "url": "https://mc.yandex.com/sync_cookie_image_decide?cid=98214699&scid=60c3480a-f13e-9214-fb88-ea0a3cba3901&token=11190.AdkAKABf9DEXSrS18GcOvEZGCatjx5_V_ntCASzC-3LC7q7ZktcWhdeBNITu4Co7XJwIWuhl8NtrJrpb0tis0t95iOXly7vkgj8u5NUfjt0%2C.2v8a7TV6FxrD9Co-YVHv0GHDeao%2C",
+              "status": 400,
+              "type": "image"
+            }
+          ],
+          "error": "1 个资源加载失败",
+          "note": "https://mc.yandex.com/sync_cookie_image_decide?cid=98214699&scid=60c3480a-f13e-9214-fb88-ea0a3cba3901&token=11190.AdkAKABf9DEXSrS18GcOvEZGCatjx5_V_ntCASzC-3LC7q7ZktcWhdeBNITu4Co7XJwIWuhl8NtrJrpb0tis0t95iOXly7vkgj8u5NUfjt0%2C.2v8a7TV6FxrD9Co-YVHv0GHDeao%2C"
         },
         "mobileAdapt": {
           "status": "fail",
@@ -880,28 +874,28 @@
         "pagespeed_mobile": {
           "status": "fail",
           "strategy": "mobile",
-          "score": 63,
-          "fcp": "2.7 s",
-          "lcp": "13.7 s",
-          "tbt": "240 ms",
-          "cls": "0",
-          "cruxData": null,
-          "error": "手机端评分 63，低于阈值 70",
-          "attempts": 1,
-          "elapsedMs": 16951
-        },
-        "pagespeed_desktop": {
-          "status": "fail",
-          "strategy": "desktop",
-          "score": 74,
-          "fcp": "0.4 s",
-          "lcp": "1.5 s",
-          "tbt": "480 ms",
+          "score": 66,
+          "fcp": "1.4 s",
+          "lcp": "8.3 s",
+          "tbt": "180 ms",
           "cls": "0.008",
           "cruxData": null,
-          "error": "电脑端评分 74，低于阈值 90",
+          "error": "手机端评分 66，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 18395
+          "elapsedMs": 22976
+        },
+        "pagespeed_desktop": {
+          "status": "ok",
+          "strategy": "desktop",
+          "score": 91,
+          "fcp": "0.6 s",
+          "lcp": "1.6 s",
+          "tbt": "90 ms",
+          "cls": "0.01",
+          "cruxData": null,
+          "error": null,
+          "attempts": 1,
+          "elapsedMs": 12512
         },
         "cdn": {
           "status": "fail",
@@ -920,15 +914,9 @@
               "url": "https://freepartsbook.com/api/online/user/detail",
               "status": 502,
               "type": "xhr"
-            },
-            {
-              "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-F06CM2K629&gtm=45je6as1v9194452102za20ozb9194445812zd9194445812xf1&_p=1793521475358&gcd=13l3l3l3l1l1&npa=0&dma=0&cid=834077351.1793521476&frm=0&ngs=1&pscdl=noapi&rcb=11&sr=800x600&uaa=&uab=&uafvl=&uam=&uamb=0&uap=&uapv=&uaw=0&ul=en-us&_s=1&tag_exp=115616986~115938466~115938468~118897920~118897930~120213116~120385422~120412526~120420414~120469145~120469153~121246026~121246034~123636746~123691370~123814944&sid=1793521475&sct=1&seg=0&dl=https%3A%2F%2Ffreepartsbook.com%2F&dt=Free%20online%20catalog%20for%20all%20power%20equipments%20%7C%20FreePartsBook&en=page_view&_fv=1&_nsi=1&_ss=1&tfd=1498",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
             }
           ],
-          "error": "4 个资源加载失败",
+          "error": "3 个资源加载失败",
           "note": "https://freepartsbook.com/api/brand/all, https://freepartsbook.com/api/parts/sku/count, https://freepartsbook.com/api/online/user/detail"
         },
         "mobileAdapt": {
@@ -940,7 +928,7 @@
         }
       },
       "overall": "warn",
-      "overallFailCount": 4
+      "overallFailCount": 3
     },
     {
       "name": "美国项目站",
@@ -1016,33 +1004,44 @@
         "pagespeed_mobile": {
           "status": "fail",
           "strategy": "mobile",
-          "score": 52,
+          "score": 58,
           "fcp": "1.7 s",
-          "lcp": "10.2 s",
-          "tbt": "720 ms",
+          "lcp": "12.1 s",
+          "tbt": "530 ms",
           "cls": "0",
           "cruxData": null,
-          "error": "手机端评分 52，低于阈值 70",
+          "error": "手机端评分 58，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 23255
+          "elapsedMs": 16578
         },
         "pagespeed_desktop": {
           "status": "fail",
           "strategy": "desktop",
-          "score": 57,
-          "fcp": "0.7 s",
+          "score": 55,
+          "fcp": "0.5 s",
           "lcp": "3.0 s",
-          "tbt": "510 ms",
+          "tbt": "530 ms",
           "cls": "0",
           "cruxData": null,
-          "error": "电脑端评分 57，低于阈值 90",
+          "error": "电脑端评分 55，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 19518
+          "elapsedMs": 18851
         },
         "cdn": {
           "status": "fail",
           "failedResources": [
             {
+              "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018",
+              "status": 404,
+              "type": "script"
+            },
+            {
+              "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "script"
+            },
+            {
               "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1018",
               "status": 404,
               "type": "script"
@@ -1054,15 +1053,28 @@
               "type": "script"
             },
             {
-              "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018",
-              "status": 404,
-              "type": "script"
-            },
-            {
-              "url": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018",
+              "url": "https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1193897282.1793522819&dt=Partwerks&tid=AW-16883749241&en=page_view&dl=https%3A%2F%2Fpartwerks.com%2F&scrsrc=www.googletagmanager.com&rnd=270686118.1793522819&navt=n&npa=0&did=dN2ZkMj&gdid=dN2ZkMj&gtm=45be6as1v9206653626za208zd9206653626xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~120213116~120385423~120420414~120469145~120469153~121246026~121246034~121284210~123636746~123691370~123814183&tft=1793522819210&tfd=1369&tids=AW-16883749241&fmt=8",
               "status": 0,
               "error": "net::ERR_ABORTED",
-              "type": "script"
+              "type": "fetch"
+            },
+            {
+              "url": "https://www.google.com/rmkt/collect/16883749241/?random=1793522819149&cv=11&fst=1793522819149&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6as1v9206653626za208zd9206653626xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~120213116~120385423~120420414~120469145~120469153~121246026~121246034~121284210~123636746~123691370~123814183&u_w=800&u_h=600&url=https%3A%2F%2Fpartwerks.com%2F&rcb=14&frm=0&tiba=Partwerks&did=dN2ZkMj&gdid=dN2ZkMj&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1193897282.1793522819&data=event%3Dgtag.config&ept=68&gcp=5",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "fetch"
+            },
+            {
+              "url": "https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1193897282.1793522819&dt=Partwerks&tid=AW-16883749241&en=source_update&dl=https%3A%2F%2Fpartwerks.com%2F&scrsrc=www.googletagmanager.com&rnd=270686118.1793522819&navt=n&npa=0&did=dN2ZkMj&gdid=dN2ZkMj&gtm=45be6as1v9206653626za208zd9206653626xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~120213116~120385423~120420414~120469145~120469153~121246026~121246034~121284210~123636746~123691370~123814183&tft=1793522819220&tfd=1379&gap.sumav=2&gap.promptav=2&gap.embav=0&tids=AW-16883749241&fmt=8",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "fetch"
+            },
+            {
+              "url": "https://ad.doubleclick.net/ccm/s/collect?auid=1193897282.1793522819&gtm=45be6as1v9206653626za208zd9206653626xecxf1&fmt=8",
+              "status": 0,
+              "error": "net::ERR_ABORTED",
+              "type": "fetch"
             },
             {
               "url": "https://partwerks.com/api/collect",
@@ -1071,38 +1083,14 @@
               "type": "fetch"
             },
             {
-              "url": "https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=2001176680.1793521479&dt=Partwerks&tid=AW-16883749241&en=page_view&dl=https%3A%2F%2Fpartwerks.com%2F&scrsrc=www.googletagmanager.com&rnd=1455586317.1793521479&navt=n&npa=0&did=dN2ZkMj&gdid=dN2ZkMj&gtm=45be6as1v9206653626za208xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897920~118897930~120213116~120385423~120412527~120420415~120469145~120469153~121246026~121246034~123691370~123814184&tft=1793521479121&tfd=1593&tids=AW-16883749241&fmt=8",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
-            {
-              "url": "https://ad.doubleclick.net/ccm/s/collect?auid=2001176680.1793521479&gtm=45be6as1v9206653626za208xecxf1&fmt=8",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
-            {
-              "url": "https://www.google.com/rmkt/collect/16883749241/?random=1793521479087&cv=11&fst=1793521479087&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6as1v9206653626za208xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897920~118897930~120213116~120385423~120412527~120420415~120469145~120469153~121246026~121246034~123691370~123814184&u_w=800&u_h=600&url=https%3A%2F%2Fpartwerks.com%2F&rcb=11&frm=0&tiba=Partwerks&did=dN2ZkMj&gdid=dN2ZkMj&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=2001176680.1793521479&data=event%3Dgtag.config&ept=68&gcp=5",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
-            {
-              "url": "https://www.google.com/rmkt/collect/659039651/?random=1793521479198&cv=11&fst=1793521479198&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6as1z8d_AW-659039651za208xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~118897920~118897930~120385423~120420414~120469145~120469153~121246026~121246034~123691370&u_w=800&u_h=600&url=https%3A%2F%2Fpartwerks.com%2F&rcb=7&frm=0&tiba=Partwerks&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=2001176680.1793521479&uaa=&uab=&uafvl=&uamb=0&uam=&uap=&uapv=&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5",
-              "status": 0,
-              "error": "net::ERR_ABORTED",
-              "type": "fetch"
-            },
-            {
-              "url": "https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=2001176680.1793521479&dt=Partwerks&tid=AW-659039651&en=page_view&dl=https%3A%2F%2Fpartwerks.com%2F&scrsrc=www.googletagmanager.com&rnd=1455586317.1793521479&navt=n&npa=0&gtm=45be6as1z8d_AW-659039651za208xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~118897920~118897930~120385423~120420414~120469145~120469153~121246026~121246034~123691370&tft=1793521479233&tfd=1705&tids=AW-659039651&fmt=8",
+              "url": "https://www.google.com/rmkt/collect/659039651/?random=1793522819857&cv=11&fst=1793522819857&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6as1z8d_AW-659039651za208zb9206653626zd9206653626xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616986~115938466~115938469~118897920~118897930~120385423~120469145~120469153~121246026~121246034~123691370~123814185&u_w=800&u_h=600&url=https%3A%2F%2Fpartwerks.com%2F&rcb=13&frm=0&tiba=Partwerks&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1193897282.1793522819&uaa=&uab=&uafvl=&uamb=0&uam=&uap=&uapv=&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5",
               "status": 0,
               "error": "net::ERR_ABORTED",
               "type": "fetch"
             }
           ],
-          "error": "12 个资源加载失败",
-          "note": "https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1018, https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1018, https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018"
+          "error": "13 个资源加载失败",
+          "note": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018, https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018, https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1018"
         },
         "mobileAdapt": {
           "status": "fail",
