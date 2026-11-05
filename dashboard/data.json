@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-11-01T08:41:48.122Z",
-  "updatedAtCN": "2026/11/1 16:41:48",
-  "phase1At": "2026-10-29T07:45:00.848Z",
+  "updatedAt": "2026-11-05T08:41:18.085Z",
+  "updatedAtCN": "2026/11/5 16:41:18",
+  "phase1At": "2026-11-05T08:41:18.116Z",
   "phase2At": "2026-11-01T08:41:48.155Z",
   "sites": [
     {
@@ -13,53 +13,50 @@
         "15962976787"
       ],
       "checks": {
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "8.25.82.142"
+          ],
+          "error": null,
+          "via": "system"
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 94,
+          "issuer": "WoTrus CA Limited",
+          "subject": "www.holdwell.net",
+          "validFrom": "Jan  7 00:00:00 2026 GMT",
+          "validTo": "Feb  7 23:59:59 2027 GMT",
+          "error": null,
+          "elapsedMs": 588
+        },
+        "ports": [
+          {
+            "port": 80,
+            "status": "ok",
+            "elapsedMs": 795,
+            "error": null
+          },
+          {
+            "port": 443,
+            "status": "ok",
+            "elapsedMs": 142,
+            "error": null
+          }
+        ],
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 859,
+          "elapsedMs": 1159,
           "error": null,
           "details": {
             "server": "Tengine",
             "contentType": "text/html; charset=UTF-8",
             "location": null
           },
-          "redirect": null,
-          "_fromPrevious": false
+          "redirect": null
         },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 101,
-          "issuer": "WoTrus CA Limited",
-          "subject": "www.holdwell.net",
-          "validFrom": "Jan  7 00:00:00 2026 GMT",
-          "validTo": "Feb  7 23:59:59 2027 GMT",
-          "error": null,
-          "elapsedMs": 444,
-          "_fromPrevious": false
-        },
-        "dns": {
-          "status": "ok",
-          "addresses": [
-            "155.102.176.70"
-          ],
-          "error": null,
-          "via": "system",
-          "_fromPrevious": false
-        },
-        "ports": [
-          {
-            "port": 80,
-            "status": "ok",
-            "elapsedMs": 431,
-            "error": null
-          },
-          {
-            "port": 443,
-            "status": "ok",
-            "elapsedMs": 332,
-            "error": null
-          }
-        ],
         "security": {
           "status": "warn",
           "issues": [
@@ -67,8 +64,7 @@
             "缺少 CSP"
           ],
           "error": null,
-          "note": "缺少 HSTS, 缺少 CSP",
-          "_fromPrevious": false
+          "note": "缺少 HSTS, 缺少 CSP"
         },
         "pagespeed_mobile": {
           "status": "ok",
@@ -81,7 +77,8 @@
           "cruxData": null,
           "error": null,
           "attempts": 1,
-          "elapsedMs": 22038
+          "elapsedMs": 22038,
+          "_fromPrevious": true
         },
         "pagespeed_desktop": {
           "status": "fail",
@@ -94,19 +91,22 @@
           "cruxData": null,
           "error": "电脑端评分 89，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 30563
+          "elapsedMs": 30563,
+          "_fromPrevious": true
+        },
+        "cdn": {
+          "status": "ok",
+          "failedResources": [],
+          "error": null,
+          "_fromPrevious": true
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "23 个可点击元素过小 (<44px)"
           ],
-          "error": "23 个可点击元素过小 (<44px)"
-        },
-        "cdn": {
-          "status": "ok",
-          "failedResources": [],
-          "error": null
+          "error": "23 个可点击元素过小 (<44px)",
+          "_fromPrevious": true
         }
       },
       "overall": "warn",
@@ -122,53 +122,50 @@
         "15962976787"
       ],
       "checks": {
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 1699,
-          "error": null,
-          "details": {
-            "server": "nginx/1.20.1",
-            "contentType": "text/html",
-            "location": null
-          },
-          "redirect": null,
-          "_fromPrevious": false
-        },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 167,
-          "issuer": "SSL Corporation",
-          "subject": "*.holdwellgroup.com",
-          "validFrom": "Sep 28 09:34:19 2026 GMT",
-          "validTo": "Apr 14 09:40:45 2027 GMT",
-          "error": null,
-          "elapsedMs": 1155,
-          "_fromPrevious": false
-        },
         "dns": {
           "status": "ok",
           "addresses": [
             "121.40.24.135"
           ],
           "error": null,
-          "via": "system",
-          "_fromPrevious": false
+          "via": "system"
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 788,
+            "elapsedMs": 1002,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 402,
+            "elapsedMs": 285,
             "error": null
           }
         ],
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 160,
+          "issuer": "SSL Corporation",
+          "subject": "*.holdwellgroup.com",
+          "validFrom": "Sep 28 09:34:19 2026 GMT",
+          "validTo": "Apr 14 09:40:45 2027 GMT",
+          "error": null,
+          "elapsedMs": 1431
+        },
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 1764,
+          "error": null,
+          "details": {
+            "server": "nginx/1.20.1",
+            "contentType": "text/html",
+            "location": null
+          },
+          "redirect": null
+        },
         "security": {
           "status": "warn",
           "issues": [
@@ -180,8 +177,7 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy",
-          "_fromPrevious": false
+          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy"
         },
         "pagespeed_mobile": {
           "status": "fail",
@@ -194,7 +190,8 @@
           "cruxData": null,
           "error": "手机端评分 68，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 31800
+          "elapsedMs": 31800,
+          "_fromPrevious": true
         },
         "pagespeed_desktop": {
           "status": "fail",
@@ -206,17 +203,20 @@
           "cls": null,
           "cruxData": null,
           "error": "API 错误: Lighthouse returned error: FAILED_DOCUMENT_REQUEST. Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests. (Details: net::ERR_TIMED_OUT)",
-          "attempts": 1
+          "attempts": 1,
+          "_fromPrevious": true
         },
         "cdn": {
           "status": "fail",
           "failedResources": [],
-          "error": "Navigation timeout of 30000 ms exceeded"
+          "error": "Navigation timeout of 30000 ms exceeded",
+          "_fromPrevious": true
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [],
-          "error": "Navigation timeout of 30000 ms exceeded"
+          "error": "Navigation timeout of 30000 ms exceeded",
+          "_fromPrevious": true
         }
       },
       "overall": "warn",
@@ -231,50 +231,47 @@
         "15962976787"
       ],
       "checks": {
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 558,
-          "error": null,
-          "details": {
-            "server": "cloudflare",
-            "contentType": "text/html; charset=utf-8",
-            "location": null
-          },
-          "redirect": null,
-          "_fromPrevious": false
-        },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 57,
-          "issuer": "Let's Encrypt",
-          "subject": "www.holdwellparts.com",
-          "validFrom": "Sep 26 18:53:02 2026 GMT",
-          "validTo": "Dec 25 18:53:01 2026 GMT",
-          "error": null,
-          "elapsedMs": 291,
-          "_fromPrevious": false
-        },
         "dns": {
           "status": "ok",
           "addresses": [
             "23.227.38.74"
           ],
           "error": null,
-          "via": "system",
-          "_fromPrevious": false
+          "via": "system"
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 50,
+          "issuer": "Let's Encrypt",
+          "subject": "www.holdwellparts.com",
+          "validFrom": "Sep 26 18:53:02 2026 GMT",
+          "validTo": "Dec 25 18:53:01 2026 GMT",
+          "error": null,
+          "elapsedMs": 285
+        },
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 513,
+          "error": null,
+          "details": {
+            "server": "cloudflare",
+            "contentType": "text/html; charset=utf-8",
+            "location": null
+          },
+          "redirect": null
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 277,
+            "elapsedMs": 274,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 8,
+            "elapsedMs": 278,
             "error": null
           }
         ],
@@ -285,8 +282,7 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy",
-          "_fromPrevious": false
+          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy"
         },
         "pagespeed_mobile": {
           "status": "fail",
@@ -304,7 +300,8 @@
           },
           "error": "手机端评分 61，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 24164
+          "elapsedMs": 24164,
+          "_fromPrevious": true
         },
         "pagespeed_desktop": {
           "status": "fail",
@@ -322,7 +319,8 @@
           },
           "error": "电脑端评分 62，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 27490
+          "elapsedMs": 27490,
+          "_fromPrevious": true
         },
         "cdn": {
           "status": "fail",
@@ -387,14 +385,16 @@
             }
           ],
           "error": "15 个资源加载失败",
-          "note": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=19475, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=19475, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice.js?v=19475"
+          "note": "https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=19475, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice_init.js?v=19475, https://www.holdwellparts.com/cdn/shop/t/8/assets/callforprice.js?v=19475",
+          "_fromPrevious": true
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "142 个可点击元素过小 (<44px)"
           ],
-          "error": "142 个可点击元素过小 (<44px)"
+          "error": "142 个可点击元素过小 (<44px)",
+          "_fromPrevious": true
         }
       },
       "overall": "warn",
@@ -409,53 +409,50 @@
         "18616749320"
       ],
       "checks": {
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 442,
-          "error": null,
-          "details": {
-            "server": "cloudflare",
-            "contentType": "text/html; charset=utf-8",
-            "location": null
-          },
-          "redirect": null,
-          "_fromPrevious": false
-        },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 56,
-          "issuer": "Let's Encrypt",
-          "subject": "www.eheparts.com",
-          "validFrom": "Sep 25 08:13:33 2026 GMT",
-          "validTo": "Dec 24 08:13:32 2026 GMT",
-          "error": null,
-          "elapsedMs": 294,
-          "_fromPrevious": false
-        },
         "dns": {
           "status": "ok",
           "addresses": [
             "23.227.38.74"
           ],
           "error": null,
-          "via": "system",
-          "_fromPrevious": false
+          "via": "system"
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 48,
+          "issuer": "Let's Encrypt",
+          "subject": "www.eheparts.com",
+          "validFrom": "Sep 25 08:13:33 2026 GMT",
+          "validTo": "Dec 24 08:13:32 2026 GMT",
+          "error": null,
+          "elapsedMs": 564
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 275,
+            "elapsedMs": 551,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 8,
+            "elapsedMs": 15,
             "error": null
           }
         ],
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 1027,
+          "error": null,
+          "details": {
+            "server": "cloudflare",
+            "contentType": "text/html; charset=utf-8",
+            "location": null
+          },
+          "redirect": null
+        },
         "security": {
           "status": "warn",
           "issues": [
@@ -463,8 +460,7 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy",
-          "_fromPrevious": false
+          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy"
         },
         "pagespeed_mobile": {
           "status": "ok",
@@ -482,7 +478,8 @@
           },
           "error": null,
           "attempts": 1,
-          "elapsedMs": 50602
+          "elapsedMs": 50602,
+          "_fromPrevious": true
         },
         "pagespeed_desktop": {
           "status": "fail",
@@ -500,7 +497,8 @@
           },
           "error": "电脑端评分 89，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 51576
+          "elapsedMs": 51576,
+          "_fromPrevious": true
         },
         "cdn": {
           "status": "fail",
@@ -536,14 +534,16 @@
             }
           ],
           "error": "5 个资源加载失败",
-          "note": "https://www.eheparts.com/api/collect, https://www.eheparts.com/shopify_pay/accelerated_checkout, https://code.tidio.co/oy2stcdjktgpxx901wvbztpn2qsswpo0.js?shop=eheparts.myshopify.com"
+          "note": "https://www.eheparts.com/api/collect, https://www.eheparts.com/shopify_pay/accelerated_checkout, https://code.tidio.co/oy2stcdjktgpxx901wvbztpn2qsswpo0.js?shop=eheparts.myshopify.com",
+          "_fromPrevious": true
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "139 个可点击元素过小 (<44px)"
           ],
-          "error": "139 个可点击元素过小 (<44px)"
+          "error": "139 个可点击元素过小 (<44px)",
+          "_fromPrevious": true
         }
       },
       "overall": "warn",
@@ -558,53 +558,50 @@
         "18667142620"
       ],
       "checks": {
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 694,
-          "error": null,
-          "details": {
-            "server": "cloudflare",
-            "contentType": "text/html; charset=utf-8",
-            "location": null
-          },
-          "redirect": null,
-          "_fromPrevious": false
-        },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 72,
-          "issuer": "Let's Encrypt",
-          "subject": "www.stopsolenoid.com",
-          "validFrom": "Oct 11 15:39:03 2026 GMT",
-          "validTo": "Jan  9 15:39:02 2027 GMT",
-          "error": null,
-          "elapsedMs": 484,
-          "_fromPrevious": false
-        },
         "dns": {
           "status": "ok",
           "addresses": [
             "23.227.38.74"
           ],
           "error": null,
-          "via": "system",
-          "_fromPrevious": false
+          "via": "system"
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 65,
+          "issuer": "Let's Encrypt",
+          "subject": "www.stopsolenoid.com",
+          "validFrom": "Oct 11 15:39:03 2026 GMT",
+          "validTo": "Jan  9 15:39:02 2027 GMT",
+          "error": null,
+          "elapsedMs": 488
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 472,
+            "elapsedMs": 474,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 253,
+            "elapsedMs": 273,
             "error": null
           }
         ],
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 1060,
+          "error": null,
+          "details": {
+            "server": "cloudflare",
+            "contentType": "text/html; charset=utf-8",
+            "location": null
+          },
+          "redirect": null
+        },
         "security": {
           "status": "warn",
           "issues": [
@@ -612,8 +609,7 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy",
-          "_fromPrevious": false
+          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy"
         },
         "pagespeed_mobile": {
           "status": "ok",
@@ -631,7 +627,8 @@
           },
           "error": null,
           "attempts": 1,
-          "elapsedMs": 36147
+          "elapsedMs": 36147,
+          "_fromPrevious": true
         },
         "pagespeed_desktop": {
           "status": "ok",
@@ -649,7 +646,8 @@
           },
           "error": null,
           "attempts": 1,
-          "elapsedMs": 39420
+          "elapsedMs": 39420,
+          "_fromPrevious": true
         },
         "cdn": {
           "status": "fail",
@@ -668,7 +666,8 @@
             }
           ],
           "error": "2 个资源加载失败",
-          "note": "https://www.stopsolenoid.com/api/collect, https://www.stopsolenoid.com/shopify_pay/accelerated_checkout"
+          "note": "https://www.stopsolenoid.com/api/collect, https://www.stopsolenoid.com/shopify_pay/accelerated_checkout",
+          "_fromPrevious": true
         },
         "mobileAdapt": {
           "status": "fail",
@@ -676,7 +675,8 @@
             "11 处文字过小 (<12px)",
             "115 个可点击元素过小 (<44px)"
           ],
-          "error": "11 处文字过小 (<12px); 115 个可点击元素过小 (<44px)"
+          "error": "11 处文字过小 (<12px); 115 个可点击元素过小 (<44px)",
+          "_fromPrevious": true
         }
       },
       "overall": "warn",
@@ -691,53 +691,50 @@
         "17857578339"
       ],
       "checks": {
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 1258,
-          "error": null,
-          "details": {
-            "server": "nginx/1.24.0",
-            "contentType": "text/html; charset=UTF-8",
-            "location": null
-          },
-          "redirect": null,
-          "_fromPrevious": false
-        },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 79,
-          "issuer": "Let's Encrypt",
-          "subject": "hwlifts.com",
-          "validFrom": "Oct 19 02:12:46 2026 GMT",
-          "validTo": "Jan 17 02:12:45 2027 GMT",
-          "error": null,
-          "elapsedMs": 794,
-          "_fromPrevious": false
-        },
         "dns": {
           "status": "ok",
           "addresses": [
             "47.88.49.112"
           ],
           "error": null,
-          "via": "system",
-          "_fromPrevious": false
+          "via": "system"
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 72,
+          "issuer": "Let's Encrypt",
+          "subject": "hwlifts.com",
+          "validFrom": "Oct 19 02:12:46 2026 GMT",
+          "validTo": "Jan 17 02:12:45 2027 GMT",
+          "error": null,
+          "elapsedMs": 820
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 1055,
+            "elapsedMs": 1041,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 279,
+            "elapsedMs": 44,
             "error": null
           }
         ],
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 1278,
+          "error": null,
+          "details": {
+            "server": "nginx/1.24.0",
+            "contentType": "text/html; charset=UTF-8",
+            "location": null
+          },
+          "redirect": null
+        },
         "security": {
           "status": "warn",
           "issues": [
@@ -749,8 +746,7 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy",
-          "_fromPrevious": false
+          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy"
         },
         "pagespeed_mobile": {
           "status": "ok",
@@ -763,7 +759,8 @@
           "cruxData": null,
           "error": null,
           "attempts": 1,
-          "elapsedMs": 17164
+          "elapsedMs": 17164,
+          "_fromPrevious": true
         },
         "pagespeed_desktop": {
           "status": "ok",
@@ -776,7 +773,8 @@
           "cruxData": null,
           "error": null,
           "attempts": 1,
-          "elapsedMs": 22957
+          "elapsedMs": 22957,
+          "_fromPrevious": true
         },
         "cdn": {
           "status": "fail",
@@ -788,14 +786,16 @@
             }
           ],
           "error": "1 个资源加载失败",
-          "note": "https://mc.yandex.com/sync_cookie_image_decide?cid=98214699&scid=60c3480a-f13e-9214-fb88-ea0a3cba3901&token=11190.AdkAKABf9DEXSrS18GcOvEZGCatjx5_V_ntCASzC-3LC7q7ZktcWhdeBNITu4Co7XJwIWuhl8NtrJrpb0tis0t95iOXly7vkgj8u5NUfjt0%2C.2v8a7TV6FxrD9Co-YVHv0GHDeao%2C"
+          "note": "https://mc.yandex.com/sync_cookie_image_decide?cid=98214699&scid=60c3480a-f13e-9214-fb88-ea0a3cba3901&token=11190.AdkAKABf9DEXSrS18GcOvEZGCatjx5_V_ntCASzC-3LC7q7ZktcWhdeBNITu4Co7XJwIWuhl8NtrJrpb0tis0t95iOXly7vkgj8u5NUfjt0%2C.2v8a7TV6FxrD9Co-YVHv0GHDeao%2C",
+          "_fromPrevious": true
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "31 个可点击元素过小 (<44px)"
           ],
-          "error": "31 个可点击元素过小 (<44px)"
+          "error": "31 个可点击元素过小 (<44px)",
+          "_fromPrevious": true
         }
       },
       "overall": "warn",
@@ -810,53 +810,50 @@
         "18638569220"
       ],
       "checks": {
-        "http": {
-          "status": "ok",
-          "statusCode": 200,
-          "elapsedMs": 779,
-          "error": null,
-          "details": {
-            "server": "nginx/1.24.0",
-            "contentType": "text/html;charset=utf-8",
-            "location": null
-          },
-          "redirect": null,
-          "_fromPrevious": false
-        },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 14,
-          "issuer": "DigiCert Inc",
-          "subject": "freepartsbook.com",
-          "validFrom": "May 12 00:00:00 2026 GMT",
-          "validTo": "Nov 12 23:59:59 2026 GMT",
-          "error": null,
-          "elapsedMs": 672,
-          "_fromPrevious": false
-        },
         "dns": {
           "status": "ok",
           "addresses": [
             "47.254.4.210"
           ],
           "error": null,
-          "via": "system",
-          "_fromPrevious": false
+          "via": "system"
+        },
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 179,
+          "issuer": "DigiCert Inc",
+          "subject": "freepartsbook.com",
+          "validFrom": "Nov  3 00:00:00 2026 GMT",
+          "validTo": "May  3 23:59:59 2027 GMT",
+          "error": null,
+          "elapsedMs": 633
         },
         "ports": [
           {
             "port": 80,
             "status": "ok",
-            "elapsedMs": 593,
+            "elapsedMs": 739,
             "error": null
           },
           {
             "port": 443,
             "status": "ok",
-            "elapsedMs": 390,
+            "elapsedMs": 96,
             "error": null
           }
         ],
+        "http": {
+          "status": "ok",
+          "statusCode": 200,
+          "elapsedMs": 743,
+          "error": null,
+          "details": {
+            "server": "nginx/1.24.0",
+            "contentType": "text/html;charset=utf-8",
+            "location": null
+          },
+          "redirect": null
+        },
         "security": {
           "status": "warn",
           "issues": [
@@ -868,8 +865,7 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy",
-          "_fromPrevious": false
+          "note": "缺少 HSTS, 缺少 CSP, 缺少 X-Frame-Options, 缺少 X-Content-Type-Options, 缺少 Referrer-Policy, 缺少 Permissions-Policy"
         },
         "pagespeed_mobile": {
           "status": "fail",
@@ -882,7 +878,8 @@
           "cruxData": null,
           "error": "手机端评分 66，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 22976
+          "elapsedMs": 22976,
+          "_fromPrevious": true
         },
         "pagespeed_desktop": {
           "status": "ok",
@@ -895,7 +892,8 @@
           "cruxData": null,
           "error": null,
           "attempts": 1,
-          "elapsedMs": 12512
+          "elapsedMs": 12512,
+          "_fromPrevious": true
         },
         "cdn": {
           "status": "fail",
@@ -917,14 +915,16 @@
             }
           ],
           "error": "3 个资源加载失败",
-          "note": "https://freepartsbook.com/api/brand/all, https://freepartsbook.com/api/parts/sku/count, https://freepartsbook.com/api/online/user/detail"
+          "note": "https://freepartsbook.com/api/brand/all, https://freepartsbook.com/api/parts/sku/count, https://freepartsbook.com/api/online/user/detail",
+          "_fromPrevious": true
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "8 个可点击元素过小 (<44px)"
           ],
-          "error": "8 个可点击元素过小 (<44px)"
+          "error": "8 个可点击元素过小 (<44px)",
+          "_fromPrevious": true
         }
       },
       "overall": "warn",
@@ -939,10 +939,42 @@
         "15236186966"
       ],
       "checks": {
+        "dns": {
+          "status": "ok",
+          "addresses": [
+            "23.227.38.74"
+          ],
+          "error": null,
+          "via": "system"
+        },
+        "ports": [
+          {
+            "port": 80,
+            "status": "ok",
+            "elapsedMs": 522,
+            "error": null
+          },
+          {
+            "port": 443,
+            "status": "ok",
+            "elapsedMs": 7,
+            "error": null
+          }
+        ],
+        "ssl": {
+          "status": "ok",
+          "daysLeft": 48,
+          "issuer": "Let's Encrypt",
+          "subject": "www.partwerks.com",
+          "validFrom": "Sep 25 07:58:04 2026 GMT",
+          "validTo": "Dec 24 07:58:03 2026 GMT",
+          "error": null,
+          "elapsedMs": 534
+        },
         "http": {
           "status": "ok",
           "statusCode": 200,
-          "elapsedMs": 679,
+          "elapsedMs": 422,
           "error": null,
           "details": {
             "server": "cloudflare",
@@ -954,43 +986,8 @@
             "to": "https://partwerks.com/",
             "code": 301
           },
-          "note": "301 → https://partwerks.com/",
-          "_fromPrevious": false
+          "note": "301 → https://partwerks.com/"
         },
-        "ssl": {
-          "status": "ok",
-          "daysLeft": 56,
-          "issuer": "Let's Encrypt",
-          "subject": "www.partwerks.com",
-          "validFrom": "Sep 25 07:58:04 2026 GMT",
-          "validTo": "Dec 24 07:58:03 2026 GMT",
-          "error": null,
-          "elapsedMs": 839,
-          "_fromPrevious": false
-        },
-        "dns": {
-          "status": "ok",
-          "addresses": [
-            "23.227.38.74"
-          ],
-          "error": null,
-          "via": "system",
-          "_fromPrevious": false
-        },
-        "ports": [
-          {
-            "port": 80,
-            "status": "ok",
-            "elapsedMs": 813,
-            "error": null
-          },
-          {
-            "port": 443,
-            "status": "ok",
-            "elapsedMs": 12,
-            "error": null
-          }
-        ],
         "security": {
           "status": "warn",
           "issues": [
@@ -998,8 +995,7 @@
             "缺少 Permissions-Policy"
           ],
           "error": null,
-          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy",
-          "_fromPrevious": false
+          "note": "缺少 Referrer-Policy, 缺少 Permissions-Policy"
         },
         "pagespeed_mobile": {
           "status": "fail",
@@ -1012,7 +1008,8 @@
           "cruxData": null,
           "error": "手机端评分 58，低于阈值 70",
           "attempts": 1,
-          "elapsedMs": 16578
+          "elapsedMs": 16578,
+          "_fromPrevious": true
         },
         "pagespeed_desktop": {
           "status": "fail",
@@ -1025,7 +1022,8 @@
           "cruxData": null,
           "error": "电脑端评分 55，低于阈值 90",
           "attempts": 1,
-          "elapsedMs": 18851
+          "elapsedMs": 18851,
+          "_fromPrevious": true
         },
         "cdn": {
           "status": "fail",
@@ -1090,14 +1088,16 @@
             }
           ],
           "error": "13 个资源加载失败",
-          "note": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018, https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018, https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1018"
+          "note": "https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018, https://partwerks.com/cdn/shop/t/6/assets/callforprice_init.js?v=1018, https://partwerks.com/cdn/shop/t/6/assets/callforprice.js?v=1018",
+          "_fromPrevious": true
         },
         "mobileAdapt": {
           "status": "fail",
           "issues": [
             "98 个可点击元素过小 (<44px)"
           ],
-          "error": "98 个可点击元素过小 (<44px)"
+          "error": "98 个可点击元素过小 (<44px)",
+          "_fromPrevious": true
         }
       },
       "overall": "warn",
